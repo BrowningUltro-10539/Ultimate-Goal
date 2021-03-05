@@ -25,6 +25,7 @@ public class DeviceMap {
     private Servo bucketPusher = null;
     private Servo leftClaw = null;
     private Servo rightClaw = null;
+    private Servo launchBlocker = null;
 
     private BNO055IMU imu;
 
@@ -58,6 +59,7 @@ public class DeviceMap {
         bucketPusher = deviceMap.get(Servo.class,"bucketpusher");
         leftClaw  = deviceMap.get(Servo.class,"leftclaw");
         rightClaw = deviceMap.get(Servo.class,"rightclaw");
+        launchBlocker = deviceMap.get(Servo.class, "launchblocker");
 
         /* Might have to change this depending on the motors */
         leftTop.setDirection(DcMotor.Direction.REVERSE);
@@ -92,7 +94,7 @@ public class DeviceMap {
         rightBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         flyWheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intake.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         imu = deviceMap.get(BNO055IMU.class, "imu");
@@ -136,6 +138,7 @@ public class DeviceMap {
 
     public Servo getRightClaw(){return rightClaw;}
 
+    public Servo getLaunchBlocker(){return  launchBlocker;}
 
 
 

@@ -27,7 +27,8 @@ public class AutoOpMode extends LinearOpMode {
     public void runOpMode() {
         DeviceMap map = new DeviceMap();
 
-        Status status =
+        Status status = ringPosition();
+        pos = status;
 
 
         imuDrive gyro = new imuDrive();
@@ -84,7 +85,7 @@ public class AutoOpMode extends LinearOpMode {
 
         waitForStart();
 
-        robot.initializeCoords(map, 0, 0);
+        robot.initializeCoords(map, -50, 0);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());
@@ -92,6 +93,15 @@ public class AutoOpMode extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
+        //FOR ZERO
+        //GO STRAIGHT TO ZERO
+        robot.goToPosition(-10, 150, map, 0.5, true);
+
+        //GO TO SHOOTING ZONE
+        robot.goToPosition(-180, 105, map, 0.5, true);
+
+        gyro.turn(-90, 0.5, map);
+        robot.updateAngle(map);
 
 
 
@@ -107,4 +117,9 @@ public class AutoOpMode extends LinearOpMode {
         map.getRightTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         map.getLeftTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+
+    protected Status ringPosition(){ return pipeline.getStatus(); }
+
+
 }
+

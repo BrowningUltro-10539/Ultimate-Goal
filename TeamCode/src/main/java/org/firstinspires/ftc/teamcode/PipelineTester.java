@@ -9,43 +9,48 @@ import org.firstinspires.ftc.teamcode.Auto.RingDeterminationPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @TeleOp(name="Pipeline Tester", group = "Testing")
 public class PipelineTester extends LinearOpMode {
-    OpenCvCamera webcam;
+    OpenCvInternalCamera phoneCam;
     RingDeterminationPipeline pipeline;
 
 
 
     @Override
     public void runOpMode(){
-        pipeline = new RingDeterminationPipeline();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        pipeline = new RingDeterminationPipeline();
+        phoneCam.setPipeline(pipeline);
 
-        webcam.setPipeline(new RingDeterminationPipeline());
+        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+        // out when the RC activity is in portrait. We do our actual image processing assuming
+        // landscape orientation, though.
+        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 
-        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
             @Override
             public void onOpened()
             {
                 // Edit @width and @height to fit your camera's resolution
-                webcam.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
         });
 
-        telemetry.addLine("Waiting for start");
-
         waitForStart();
 
-        while(opModeIsActive()){
+        while (opModeIsActive())
+        {
             telemetry.addData("Analysis", pipeline.getAnalysis());
             telemetry.addData("Position", pipeline.position);
             telemetry.update();
-        }
 
-        sleep(50); 
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
+        }
     }
 
 }

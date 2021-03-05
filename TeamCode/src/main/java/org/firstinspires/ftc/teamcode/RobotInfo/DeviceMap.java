@@ -19,9 +19,12 @@ public class DeviceMap {
     private DcMotor rightBottom = null;
     private DcMotor flyWheel = null;
     private DcMotor intake = null;
+    private DcMotor arm = null;
 
     private Servo bucket = null;
     private Servo bucketPusher = null;
+    private Servo leftClaw = null;
+    private Servo rightClaw = null;
 
     private BNO055IMU imu;
 
@@ -48,8 +51,13 @@ public class DeviceMap {
 
         intake = deviceMap.get(DcMotor.class, "intake");
 
+        arm = deviceMap.get(DcMotor.class,"arm");
+
+
         bucket = deviceMap.get(Servo.class, "bucket");
         bucketPusher = deviceMap.get(Servo.class,"bucketpusher");
+        leftClaw  = deviceMap.get(Servo.class,"leftclaw");
+        rightClaw = deviceMap.get(Servo.class,"rightclaw");
 
         /* Might have to change this depending on the motors */
         leftTop.setDirection(DcMotor.Direction.REVERSE);

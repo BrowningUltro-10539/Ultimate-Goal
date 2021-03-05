@@ -82,7 +82,24 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.b){
             map.getBucket().setPosition(0.25);
         }
+        if(gamepad2.dpad_down){
+            map.getArm().setPower(0.5);
+        }else if (gamepad2.dpad_up){
+            map.getArm().setPower(-0.5);
+        }else{
+            map.getArm().setPower(0);
+        }
 
+
+        if(gamepad2.dpad_left){
+            map.getLeftClaw().setPosition(-1);
+            map.getRightClaw().setPosition(1);
+        }
+
+        if(gamepad2.dpad_right){
+            map.getLeftClaw().setPosition(1);
+            map.getRightClaw().setPosition(-1);
+        }
         //ADD MORE SERVOS OR MOTORS BASED ON WHAT I AM TOLD
 
     }

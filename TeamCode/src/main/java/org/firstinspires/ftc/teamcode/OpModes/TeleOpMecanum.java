@@ -86,9 +86,9 @@ public class TeleOpMecanum extends OpMode {
             map.getLaunchBlocker().setPosition(-1);
         }
         if(gamepad2.x){
-            map.getLaunchBlocker().setPosition(1);
+            map.getRingFlicker().setPosition(0);
         }else{
-            map.getLaunchBlocker().setPosition(-1);
+            map.getRingFlicker().setPosition(-1);
         }
 
         if(gamepad2.dpad_down){

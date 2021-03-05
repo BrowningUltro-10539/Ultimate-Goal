@@ -8,16 +8,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-import static org.firstinspires.ftc.teamcode.Auto.RingPosition.*;
-
-public class RingDeterminationPipeline extends OpenCvPipeline
-{
-    public enum RingStatus
-    {
-        FOUR,
-        ONE,
-        NONE
-    }
+public class RingDeterminationPipeline extends OpenCvPipeline {
 
     /*
      * Some color constants
@@ -53,7 +44,7 @@ public class RingDeterminationPipeline extends OpenCvPipeline
     int avg1;
 
     // Volatile since accessed by OpMode thread w/o synchronization
-    public volatile RingPosition position = FOUR;
+    private Status position = Status.FOUR;
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
@@ -87,13 +78,13 @@ public class RingDeterminationPipeline extends OpenCvPipeline
                 BLUE, // The color the rectangle is drawn in
                 2); // Thickness of the rectangle lines
 
-        position = RingPosition.FOUR;// Record our analysis
+        position = Status.FOUR;// Record our analysis
         if(avg1 > FOUR_RING_THRESHOLD){
-            position = RingPosition.FOUR;
+            position = Status.FOUR;
         }else if (avg1 > ONE_RING_THRESHOLD){
-            position = RingPosition.ONE;
+            position = Status.ONE;
         }else{
-            position = RingPosition.NONE;
+            position = Status.NONE;
         }
 
         Imgproc.rectangle(
@@ -110,5 +101,9 @@ public class RingDeterminationPipeline extends OpenCvPipeline
     public int getAnalysis()
     {
         return avg1;
+    }
+
+    public Status getStatus(){
+        return position;
     }
 }

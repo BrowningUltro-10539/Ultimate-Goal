@@ -36,7 +36,7 @@ public class TeleOpMecanum extends OpMode {
     public void loop(){
         double x = gamepad1.left_stick_x;
         double y = -gamepad1.left_stick_y;
-        double right_stick_x = -gamepad1.right_stick_x;
+        double right_stick_x = gamepad1.right_stick_x;
         double multiplier  = gamepad1.left_trigger + 1;
 
         //Mecanum Drive

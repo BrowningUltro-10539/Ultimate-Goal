@@ -40,7 +40,7 @@ public class TeleOpMecanum extends OpMode {
         double multiplier  = gamepad1.left_trigger + 1;
 
         //Mecanum Drive
-        driver.move(x/multiplier, y/multiplier, right_stick_x/multiplier);
+        driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
 
 
         map.getIntake().setPower(-gamepad2.left_stick_y);

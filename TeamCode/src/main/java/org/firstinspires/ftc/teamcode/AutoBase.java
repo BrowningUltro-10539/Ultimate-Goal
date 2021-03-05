@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-/*
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -15,7 +14,7 @@ import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
 @Autonomous(name="AutoBase", group="Auto")
 @Disabled
-public class AutoBase extends LinearOpMode {
+public abstract class AutoBase extends LinearOpMode {
     protected String CAMERA_SYSTEM = "WEBCAM";
     protected MecanumDrive driver;
     protected OdometryDrive drive;
@@ -107,4 +106,3 @@ public class AutoBase extends LinearOpMode {
     }
 
 }
-*/

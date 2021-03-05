@@ -118,6 +118,8 @@ public class DeviceMap {
 
     public DcMotor getFlyWheel() {return flyWheel;}
 
+    public DcMotor getArm(){return arm;}
+
     public BNO055IMU getImu() {
         return imu;
     }
@@ -129,6 +131,11 @@ public class DeviceMap {
     public Servo getBucket(){return bucket; }
 
     public Servo getBucketPusher(){return bucketPusher;}
+
+    public Servo getLeftClaw(){return leftClaw;}
+
+    public Servo getRightClaw(){return rightClaw;}
+
 
 
 

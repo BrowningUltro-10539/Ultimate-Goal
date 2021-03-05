@@ -85,6 +85,11 @@ public class TeleOpMecanum extends OpMode {
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(-1);
         }
+        if(gamepad2.x){
+            map.getLaunchBlocker().setPosition(1);
+        }else{
+            map.getLaunchBlocker().setPosition(-1);
+        }
 
         if(gamepad2.dpad_down){
             map.getArm().setPower(0.5);

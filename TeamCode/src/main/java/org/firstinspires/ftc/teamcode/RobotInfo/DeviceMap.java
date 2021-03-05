@@ -26,7 +26,7 @@ public class DeviceMap {
     private Servo leftClaw = null;
     private Servo rightClaw = null;
     private Servo launchBlocker = null;
-
+    private Servo ringFlicker = null;
     private BNO055IMU imu;
 
     private OpenCvCamera camera;
@@ -60,6 +60,7 @@ public class DeviceMap {
         leftClaw  = deviceMap.get(Servo.class,"leftclaw");
         rightClaw = deviceMap.get(Servo.class,"rightclaw");
         launchBlocker = deviceMap.get(Servo.class, "launchblocker");
+        ringFlicker = deviceMap.get(Servo.class,"ringflicker");
 
         /* Might have to change this depending on the motors */
         leftTop.setDirection(DcMotor.Direction.REVERSE);
@@ -140,6 +141,6 @@ public class DeviceMap {
 
     public Servo getLaunchBlocker(){return  launchBlocker;}
 
-
+    public Servo getRingFlicker(){return ringFlicker;}
 
 }

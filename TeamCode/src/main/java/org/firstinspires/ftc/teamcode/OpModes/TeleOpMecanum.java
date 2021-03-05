@@ -48,8 +48,8 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
+            map.getBucket().setPosition(0.63);
 
-            map.getBucketPusher().setPosition(-1);
 
             if (Math.abs(timePass - lastRuntime) > 0.05){
                 if (flyPower < 1){
@@ -63,7 +63,8 @@ public class TeleOpMecanum extends OpMode {
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
 
-            map.getBucketPusher().setPosition(1);
+
+            map.getBucket().setPosition(0.5);
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){
@@ -77,10 +78,10 @@ public class TeleOpMecanum extends OpMode {
 
 
         if(gamepad2.a){
-            map.getBucket().setPosition(0);
+            map.getBucketPusher().setPosition(0);
         }
-        if(gamepad2.b){
-            map.getBucket().setPosition(0.25);
+        else if(gamepad2.b){
+            map.getBucketPusher().setPosition(1);
         }
         if(gamepad2.dpad_down){
             map.getArm().setPower(0.5);

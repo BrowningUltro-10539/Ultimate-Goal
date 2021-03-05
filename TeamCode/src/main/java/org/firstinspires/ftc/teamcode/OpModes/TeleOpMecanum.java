@@ -48,7 +48,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
-            map.getBucket().setPosition(0.63);
+            map.getBucket().setPosition(0.62);
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){

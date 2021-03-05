@@ -45,7 +45,7 @@ public class PipelineTester extends LinearOpMode {
         while (opModeIsActive())
         {
             telemetry.addData("Analysis", pipeline.getAnalysis());
-            telemetry.addData("Position", pipeline.position);
+            telemetry.addData("Position", pipeline.getStatus());
             telemetry.update();
 
             // Don't burn CPU cycles busy-looping in this sample

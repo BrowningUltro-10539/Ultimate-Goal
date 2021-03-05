@@ -65,7 +65,7 @@ public class DeviceMap {
         rightTop.setDirection(DcMotor.Direction.FORWARD);
         rightBottom.setDirection(DcMotor.Direction.FORWARD);
 
-        flyWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+        flyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
         intake.setDirection(DcMotorSimple.Direction.FORWARD);
 

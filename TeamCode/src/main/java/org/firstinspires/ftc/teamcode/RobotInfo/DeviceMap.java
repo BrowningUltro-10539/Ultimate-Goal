@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.openftc.easyopencv.OpenCvCamera;
+//import org.openftc.easyopencv.OpenCvCamera;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
@@ -29,7 +29,7 @@ public class DeviceMap {
     private Servo ringFlicker = null;
     private BNO055IMU imu;
 
-    private OpenCvCamera camera;
+
 
     /* Add servos on build day */
 

@@ -18,17 +18,17 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 @Autonomous(name="AutoOpModeOdometry", group="Auto")
 public class AutoOpMode extends LinearOpMode {
-    OpenCvInternalCamera phoneCam;
-    RingDeterminationPipeline pipeline;
+//    OpenCvInternalCamera phoneCam;
+//    RingDeterminationPipeline pipeline;
 
-    protected Status pos;
+//    protected Status pos;
 
     @Override
     public void runOpMode() {
         DeviceMap map = new DeviceMap();
 
-        Status status = ringPosition();
-        pos = status;
+//        Status status = ringPosition();
+//        pos = status;
 
 
         imuDrive gyro = new imuDrive();
@@ -56,25 +56,25 @@ public class AutoOpMode extends LinearOpMode {
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new RingDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//        pipeline = new RingDeterminationPipeline();
+//        phoneCam.setPipeline(pipeline);
 
         // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
         // out when the RC activity is in portrait. We do our actual image processing assuming
         // landscape orientation, though.
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                // Edit @width and @height to fit your camera's resolution
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
-            }
-        });
+//        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+//
+////        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+//        {
+//            @Override
+//            public void onOpened()
+//            {
+//                // Edit @width and @height to fit your camera's resolution
+//                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+//            }
+//        });
 
         telemetry.addData("", "ready");
         telemetry.update();
@@ -91,16 +91,15 @@ public class AutoOpMode extends LinearOpMode {
         telemetry.addData("Y", robot.getYPos());
         telemetry.addData("Angle", robot.getCurrentAngle());
         telemetry.update();
-        sleep(1000);
 
         //FOR ZERO
         //GO STRAIGHT TO ZERO
-        robot.goToPosition(-10, 150, map, 0.5, true);
+        robot.goToPosition(-30, 150, map, 0.5, true);
 
-        //GO TO SHOOTING ZONE
-        robot.goToPosition(-180, 105, map, 0.5, true);
-
-        gyro.turn(-90, 0.5, map);
+        sleep(1000);
+         //GO TO SHOOTING ZONE
+        robot.goToPosition(-100, 105, map, 0.5, true);
+        gyro.turn(90, 0.5, map);
         robot.updateAngle(map);
 
 
@@ -118,7 +117,7 @@ public class AutoOpMode extends LinearOpMode {
         map.getLeftTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    protected Status ringPosition(){ return pipeline.getStatus(); }
+//    protected Status ringPosition(){ return pipeline.getStatus(); }
 
 
 }

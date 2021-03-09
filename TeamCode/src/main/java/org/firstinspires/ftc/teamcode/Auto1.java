@@ -3,7 +3,7 @@
 //
 //
 //import org.firstinspires.ftc.teamcode.Auto.RingDeterminationPipeline;
-//import org.firstinspires.ftc.teamcode.Auto.Status;
+//import org.firstinspires.ftc.teamcode.Vision.Status;
 //import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 //import org.openftc.easyopencv.OpenCvCameraFactory;
 //import org.openftc.easyopencv.OpenCvInternalCamera;

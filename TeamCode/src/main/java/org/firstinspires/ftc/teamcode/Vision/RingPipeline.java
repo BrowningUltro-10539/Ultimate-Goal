@@ -9,12 +9,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
+import org.firstinspires.ftc.teamcode.Vision.Status;
+
 import java.util.List;
 
 public class RingPipeline implements ObjectIdentification{
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
+
 
     private VuforiaLocalizer vuforia;
 
@@ -33,6 +36,8 @@ public class RingPipeline implements ObjectIdentification{
     protected List<Recognition> lastUpdatedRecognitions = null;
 
     private String foundTargetName                 = "None";
+
+    private Status numberOfRings = Status.FOUR;
 
     public RingPipeline(HardwareMap hardwareMap, Telemetry telemetry, String modelAssetName, String[] assetNames, String targetName){
         this.hardwareMap    = hardwareMap;
@@ -63,6 +68,10 @@ public class RingPipeline implements ObjectIdentification{
 
 
     public String getTargetLabel() { return foundTargetName; }
+
+    public Status getStatus(){
+        return numberOfRings;
+    }
     public void find(){
         if (tfod == null) {
             return;
@@ -81,6 +90,14 @@ public class RingPipeline implements ObjectIdentification{
                 continue;
             }
             foundTargetName = recognition.getLabel();
+        }
+
+        if(foundTargetName == "Quad"){
+            numberOfRings = Status.FOUR;
+        } else if (foundTargetName == "Single") {
+            numberOfRings = Status.ONE;
+        } else {
+            numberOfRings = Status.NONE;
         }
     }
     public void stop()

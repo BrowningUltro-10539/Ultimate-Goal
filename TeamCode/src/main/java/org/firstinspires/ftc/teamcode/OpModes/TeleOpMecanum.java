@@ -16,6 +16,7 @@ public class TeleOpMecanum extends OpMode {
     DeviceMap map = new DeviceMap();
     double lastRuntime = 0;
     double timePass = getRuntime();
+    boolean shootingSequenceStarted = false;
 
     @Override
     public void init(){
@@ -45,10 +46,11 @@ public class TeleOpMecanum extends OpMode {
 
         map.getIntake().setPower(-gamepad2.left_stick_y);
 
+        // Flywheel speed up and Down
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
-            map.getBucket().setPosition(0.62);
+            map.getBucket().setPosition(0.60); //CHECK THIS ONE
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){
@@ -76,24 +78,25 @@ public class TeleOpMecanum extends OpMode {
             }
         }
 
-
+        //Shooting Controls
         if(gamepad2.a){
             map.getBucketPusher().setPosition(0);
             map.getLaunchBlocker().setPosition(-1);
         }
         else if(gamepad2.b){
             map.getBucketPusher().setPosition(1);
-        }
-        else{
             map.getLaunchBlocker().setPosition(1);
+
         }
 
+        //Intake Flicker
         if(gamepad2.y){
             map.getRingFlicker().setPosition(0.5);
         }else{
             map.getRingFlicker().setPosition(0);
         }
 
+        //Wobble Goal Arm
         if(gamepad2.dpad_down){
             map.getArm().setPower(0.5);
         }else if (gamepad2.dpad_up){
@@ -101,7 +104,6 @@ public class TeleOpMecanum extends OpMode {
         }else{
             map.getArm().setPower(0);
         }
-
 
         if(gamepad2.dpad_left){
             map.getLeftClaw().setPosition(1);
@@ -112,9 +114,69 @@ public class TeleOpMecanum extends OpMode {
             map.getLeftClaw().setPosition(- 1);
             map.getRightClaw().setPosition(-1);
         }
-        //ADD MORE SERVOS OR MOTORS BASED ON WHAT I AM TOLD
+
+
+        //Automatic Flywheel Shooting
+        if(gamepad2.left_bumper){
+            timePass = getRuntime();
+
+            //Launch #1
+            if(!shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(-1);
+                shootingSequenceStarted=true;
+                timePass=lastRuntime;
+            }
+            if(Math.abs(timePass-lastRuntime)>100 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(0);
+            }
+            if(Math.abs(timePass-lastRuntime)>500 && shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(1);
+            }
+            if(Math.abs(timePass-lastRuntime)>700 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(1);
+            }
+
+            //Launch #2
+            if(Math.abs(timePass-lastRuntime)>1000 && shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(-1);
+            }
+            if(Math.abs(timePass-lastRuntime)>1100 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(0);
+            }
+            if(Math.abs(timePass-lastRuntime)>1500 && shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(1);
+            }
+            if(Math.abs(timePass-lastRuntime)>1700 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(1);
+            }
+
+            //Launch #3
+            if(Math.abs(timePass-lastRuntime)>2000 && shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(-1);
+            }
+            if(Math.abs(timePass-lastRuntime)>2100 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(0);
+            }
+            if(Math.abs(timePass-lastRuntime)>2500 && shootingSequenceStarted){
+                map.getLaunchBlocker().setPosition(1);
+            }
+            if(Math.abs(timePass-lastRuntime)>2700 && shootingSequenceStarted){
+                map.getBucketPusher().setPosition(1);
+                shootingSequenceStarted = false;
+            }
+        }
+
+        //Reset for emergencies
+        if(gamepad2.x){
+            shootingSequenceStarted = false;
+            map.getBucketPusher().setPosition(1);
+            map.getLaunchBlocker().setPosition(1);
+        }
+
+
 
     }
+
 
 }
 

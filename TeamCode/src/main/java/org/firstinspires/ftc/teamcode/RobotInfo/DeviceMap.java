@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+//import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 public final class DeviceMap {
 
@@ -61,16 +61,17 @@ public final class DeviceMap {
 
     public void init(HardwareMap hardwareMap){
         setUpMotors(hardwareMap);
+        setUpDriveMotors(hardwareMap);
         setUpImu(hardwareMap);
         setupServos(hardwareMap);
         setUpImu(hardwareMap);
-        initTfod(hardwareMap);
-        initVuforia();
+        //initTfod(hardwareMap);
+        //initVuforia();
     }
 
 
     public void setUpDriveMotors(HardwareMap map){
-        telemetry.addLine("Setting Up Drive Motors");
+        //telemetry.addLine("Setting Up Drive Motors");
         leftTop = map.get(DcMotor.class, "LT");
         rightTop = map.get(DcMotor.class, "RT");
         leftBottom = map.get(DcMotor.class, "LB");
@@ -110,8 +111,8 @@ public final class DeviceMap {
     }
 
     public void setupServos(HardwareMap map){
-        telemetry.addLine("Setting Servos Up");
-        telemetry.update();
+        //telemetry.addLine("Setting Servos Up");
+        //telemetry.update();
 
         bucket = map.get(Servo.class, "bucket");
         bucketPusher = map.get(Servo.class,"bucketpusher");

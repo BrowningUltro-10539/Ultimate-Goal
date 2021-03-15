@@ -83,12 +83,15 @@ public class TeleOpMecanum extends OpMode {
         }
         else if(gamepad2.b){
             map.getBucketPusher().setPosition(1);
-            map.getLaunchBlocker().setPosition(-1);
         }
-        if(gamepad2.x){
-            map.getRingFlicker().setPosition(0);
+        else{
+            map.getLaunchBlocker().setPosition(1);
+        }
+
+        if(gamepad2.y){
+            map.getRingFlicker().setPosition(0.5);
         }else{
-            map.getRingFlicker().setPosition(-1);
+            map.getRingFlicker().setPosition(0);
         }
 
         if(gamepad2.dpad_down){
@@ -101,12 +104,12 @@ public class TeleOpMecanum extends OpMode {
 
 
         if(gamepad2.dpad_left){
-            map.getLeftClaw().setPosition(-1);
+            map.getLeftClaw().setPosition(1);
             map.getRightClaw().setPosition(1);
         }
 
         if(gamepad2.dpad_right){
-            map.getLeftClaw().setPosition(1);
+            map.getLeftClaw().setPosition(- 1);
             map.getRightClaw().setPosition(-1);
         }
         //ADD MORE SERVOS OR MOTORS BASED ON WHAT I AM TOLD

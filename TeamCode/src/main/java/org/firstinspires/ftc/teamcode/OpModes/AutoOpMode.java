@@ -35,9 +35,10 @@ public class AutoOpMode extends LinearOpMode {
         searchableTarget = new RingPipeline(hardwareMap, telemetry, TFOD_MODEL_ASSET, ASSET_NAMES, TARGET_NAME);
 
 
-
-        while(opModeIsActive() != true){
-            searchableTarget.find();
+        if(!opModeIsActive()) {
+            while (!opModeIsActive()) {
+                searchableTarget.find();
+            }
         }
 
         pos = searchableTarget.getStatus();

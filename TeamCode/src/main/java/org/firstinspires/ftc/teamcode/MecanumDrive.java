@@ -19,9 +19,9 @@ public final class MecanumDrive {
         double LB = Range.clip(left_stick_y - left_stick_x + right_stick_x, -1, 1);
         double RB = Range.clip(left_stick_y + left_stick_x - right_stick_x, -1, 1);
 
-        if(lb && rb){
+        if(lb){
             swap = true;
-        } else {
+        } else if (rb) {
             swap = false;
         }
 
@@ -30,7 +30,7 @@ public final class MecanumDrive {
             map.getRightTop().setPower(RB);
             map.getLeftBottom().setPower(LF);
             map.getRightBottom().setPower(LB);
-        } else {
+        } else if (!swap) {
             map.getLeftTop().setPower(LF);
             map.getRightTop().setPower(RF);
             map.getLeftBottom().setPower(LB);

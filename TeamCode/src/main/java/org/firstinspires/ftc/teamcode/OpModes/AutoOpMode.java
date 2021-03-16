@@ -35,13 +35,6 @@ public class AutoOpMode extends LinearOpMode {
         searchableTarget = new RingPipeline(hardwareMap, telemetry, TFOD_MODEL_ASSET, ASSET_NAMES, TARGET_NAME);
 
 
-        if(!opModeIsActive()) {
-            while (!opModeIsActive()) {
-                searchableTarget.find();
-            }
-        }
-
-        pos = searchableTarget.getStatus();
 
         /* Add these into a preliminary base class that this OpMode will extend */
         //FIX IMU FOR VERTICAL MOUNTING
@@ -66,8 +59,20 @@ public class AutoOpMode extends LinearOpMode {
 
         resetEncoders(map);
 
+        while (!isStarted()) {
+            searchableTarget.find();
+            pos = searchableTarget.getStatus();
+            telemetry.addData("detected", pos);
+            telemetry.update();
+
+        }
+
+
 
         waitForStart();
+
+        pos = searchableTarget.getStatus();
+
 
         robot.initializeCoords(map, -50, 0);
 
@@ -78,11 +83,17 @@ public class AutoOpMode extends LinearOpMode {
 
         switch(pos){
             case FOUR:
-                /* robot.goToPosition(); */
+                telemetry.addData("Ran", pos);
+                telemetry.update();
+                sleep(1000);
             case ONE:
-                /* robot.goToPosition(); */
+                telemetry.addData("Ran", pos);
+                telemetry.update();
+                sleep(1000);
             case NONE:
-                /* robot.goToPosition(); */
+                telemetry.addData("Ran", pos);
+                telemetry.update();
+                sleep(1000);
         }
     }
     private void resetEncoders(DeviceMap map){

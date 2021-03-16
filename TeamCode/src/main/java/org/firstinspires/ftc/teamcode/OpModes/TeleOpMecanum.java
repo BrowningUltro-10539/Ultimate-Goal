@@ -41,9 +41,14 @@ public class TeleOpMecanum extends OpMode {
         double multiplier  = gamepad1.left_trigger + 1;
         boolean lb = gamepad1.left_bumper;
         boolean rb = gamepad1.right_bumper;
+
+        if(gamepad1.left_trigger>0){
+            x=x/2;
+            y=y/2;
+        }
+
         //Mecanum Drive
         driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier, lb, rb);
-
 
         map.getIntake().setPower(-gamepad2.left_stick_y);
 
@@ -51,7 +56,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
-            map.getBucket().setPosition(0.60); //CHECK THIS ONE
+            map.getBucket().setPosition(0.61); //CHECK THIS ONE
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){
@@ -80,11 +85,11 @@ public class TeleOpMecanum extends OpMode {
         }
 
         //Shooting Controls
-        if(gamepad2.a){
+        if(gamepad2.a && !shootingSequenceStarted){
             map.getBucketPusher().setPosition(0);
             map.getLaunchBlocker().setPosition(-1);
         }
-        else if(gamepad2.b){
+        else if(gamepad2.b && !shootingSequenceStarted){
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
 
@@ -107,12 +112,12 @@ public class TeleOpMecanum extends OpMode {
         }
 
         if(gamepad2.dpad_left){
-            map.getLeftClaw().setPosition(1);
+            map.getLeftClaw().setPosition(-1);
             map.getRightClaw().setPosition(1);
         }
 
         if(gamepad2.dpad_right){
-            map.getLeftClaw().setPosition(- 1);
+            map.getLeftClaw().setPosition(1);
             map.getRightClaw().setPosition(-1);
         }
 
@@ -127,41 +132,41 @@ public class TeleOpMecanum extends OpMode {
                 shootingSequenceStarted=true;
                 timePass=lastRuntime;
             }
-            if(Math.abs(timePass-lastRuntime)>100 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>1 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(0);
             }
-            if(Math.abs(timePass-lastRuntime)>500 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>2 && shootingSequenceStarted){
                 map.getLaunchBlocker().setPosition(1);
             }
-            if(Math.abs(timePass-lastRuntime)>700 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>3 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(1);
             }
 
             //Launch #2
-            if(Math.abs(timePass-lastRuntime)>1000 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>4 && shootingSequenceStarted){
                 map.getLaunchBlocker().setPosition(-1);
             }
-            if(Math.abs(timePass-lastRuntime)>1100 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>5 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(0);
             }
-            if(Math.abs(timePass-lastRuntime)>1500 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>6 && shootingSequenceStarted){
                 map.getLaunchBlocker().setPosition(1);
             }
-            if(Math.abs(timePass-lastRuntime)>1700 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>7 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(1);
             }
 
             //Launch #3
-            if(Math.abs(timePass-lastRuntime)>2000 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>8 && shootingSequenceStarted){
                 map.getLaunchBlocker().setPosition(-1);
             }
-            if(Math.abs(timePass-lastRuntime)>2100 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>9 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(0);
             }
-            if(Math.abs(timePass-lastRuntime)>2500 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>10 && shootingSequenceStarted){
                 map.getLaunchBlocker().setPosition(1);
             }
-            if(Math.abs(timePass-lastRuntime)>2700 && shootingSequenceStarted){
+            if(Math.abs(timePass-lastRuntime)>11 && shootingSequenceStarted){
                 map.getBucketPusher().setPosition(1);
                 shootingSequenceStarted = false;
             }

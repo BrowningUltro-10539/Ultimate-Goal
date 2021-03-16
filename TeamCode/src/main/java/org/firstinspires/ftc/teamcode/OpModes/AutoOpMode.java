@@ -34,12 +34,13 @@ public class AutoOpMode extends LinearOpMode {
         map.init(hardwareMap);
         searchableTarget = new RingPipeline(hardwareMap, telemetry, TFOD_MODEL_ASSET, ASSET_NAMES, TARGET_NAME);
 
-        searchableTarget.find();
+
+
+        while(opModeIsActive() != true){
+            searchableTarget.find();
+        }
+
         pos = searchableTarget.getStatus();
-
-
-
-
 
         /* Add these into a preliminary base class that this OpMode will extend */
         //FIX IMU FOR VERTICAL MOUNTING
@@ -63,6 +64,7 @@ public class AutoOpMode extends LinearOpMode {
 
 
         resetEncoders(map);
+
 
         waitForStart();
 
@@ -94,7 +96,6 @@ public class AutoOpMode extends LinearOpMode {
         map.getLeftTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-//    protected Status ringPosition(){ return pipeline.getStatus(); }
 
 
 }

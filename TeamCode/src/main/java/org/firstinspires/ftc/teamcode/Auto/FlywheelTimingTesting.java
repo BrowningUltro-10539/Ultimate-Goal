@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@Autonomous(name = "Auto 0 Rings")
-public class NoRingsTesting extends LinearOpMode {
+@Autonomous(name = "Flywheel Testing")
+public class FlywheelTimingTesting extends LinearOpMode {
 
 
     @Override
@@ -39,8 +39,6 @@ public class NoRingsTesting extends LinearOpMode {
         //Need to change back into the IMU mode to use the gyro
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
-
-
         map.getLeftClaw().setPosition(-1);
         map.getRightClaw().setPosition(1);
 
@@ -52,32 +50,6 @@ public class NoRingsTesting extends LinearOpMode {
 
         waitForStart();
 
-        robot.initializeCoords(map, -50,0);
-        sleep(1000);
-
-        robot.goToPosition(-20,1, map,0.5,true);
-
-        sleep(1000);
-
-        robot.goToPosition(-19,130, map, 0.5, true);
-
-        map.getArm().setTargetPosition(500);
-        map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        map.getArm().setPower(1);
-        map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        sleep(1000);
-        map.getLeftClaw().setPosition(1);
-        map.getRightClaw().setPosition(-1);
-        sleep(500);
-
-        map.getArm().setPower(-1);
-        sleep(500);
-        map.getArm().setPower(0);
-
-        robot.goToPosition(-100,100,map, 0.5, true);
-
-        gyro.turn(90, 0.5, map);
 
         map.getFlyWheel().setPower(1);
 
@@ -88,15 +60,15 @@ public class NoRingsTesting extends LinearOpMode {
 
 
         for(int i=0; i<3; i++){
+            map.getLaunchBlocker().setPosition(0);
+            sleep(100);
             map.getBucketPusher().setPosition(0);
-            map.getLaunchBlocker().setPosition(-1);
-
-            sleep(350);
+            sleep(500);
 
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
 
-            sleep(1000);
+            sleep(1500);
         }
         sleep(1000);
         map.getFlyWheel().setPower(0);

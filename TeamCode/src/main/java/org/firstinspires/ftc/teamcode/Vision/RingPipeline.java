@@ -77,9 +77,6 @@ public class RingPipeline implements ObjectIdentification{
             return;
         }
         List<Recognition> recognitions = tfod.getRecognitions();
-        if (recognitions == null) {
-            return;
-        }
         telemetry.addData("# Object Detected", recognitions.size());
         // step through the list of recognitions and display boundary info.
         int i = 0;

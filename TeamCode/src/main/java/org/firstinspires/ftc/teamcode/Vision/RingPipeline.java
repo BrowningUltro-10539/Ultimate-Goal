@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Vision.Status;
 import java.util.List;
 
 public class RingPipeline implements ObjectIdentification{
-    private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
+    private static final String TFOD_MODEL = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
 
@@ -122,7 +122,7 @@ public class RingPipeline implements ObjectIdentification{
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minResultConfidence = 0.8f;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+        tfod.loadModelFromAsset(TFOD_MODEL, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
         tfod.activate();
 
     }

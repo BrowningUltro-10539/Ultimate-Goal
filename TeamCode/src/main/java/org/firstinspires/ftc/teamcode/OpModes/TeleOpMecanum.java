@@ -17,6 +17,8 @@ public class TeleOpMecanum extends OpMode {
     double lastRuntime = 0;
     double timePass = getRuntime();
     boolean shootingSequenceStarted = false;
+    boolean leftBumperPressed = false;
+    boolean rightBumperPressed = true;
 
     @Override
     public void init(){
@@ -47,8 +49,17 @@ public class TeleOpMecanum extends OpMode {
             y=y/2;
         }
 
-        //Mecanum Drive
-        driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier, lb, rb);
+        //This may have to be changed
+        if(lb && !leftBumperPressed && rightBumperPressed){
+            driver.move(map, y/multiplier, x/multiplier, right_stick_x/multiplier);
+            leftBumperPressed = true;
+            rightBumperPressed = false;
+        } else if(rb && !rightBumperPressed && leftBumperPressed){
+            driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
+            leftBumperPressed = false;
+            rightBumperPressed = true;
+        }
+
 
         map.getIntake().setPower(-gamepad2.left_stick_y);
 

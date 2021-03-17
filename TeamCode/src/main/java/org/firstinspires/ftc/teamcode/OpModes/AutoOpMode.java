@@ -82,18 +82,123 @@ public class AutoOpMode extends LinearOpMode {
         telemetry.update();
 
         switch(pos){
-            case FOUR:
+            case FOUR: // Zone C
                 telemetry.addData("Ran", pos);
                 telemetry.update();
                 sleep(1000);
-            case ONE:
+
+                robot.goToPosition(-40,280,map,0.6,true);
+
+                map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //map.getArm().setTargetPosition(100); CALCULATE THIS
+                map.getArm().setPower(1);
+                sleep(1000);
+                map.getLeftClaw().setPosition(-1);
+                map.getRightClaw().setPosition(1);
+                sleep(500);
+
+                //map.getArm().setTargetPosition(-100); CALCULATE
+                map.getArm().setPower(1);
+
+                robot.goToPosition(-150,100,map, 0.5, true);
+
+                map.getFlyWheel().setPower(1);
+                sleep(2000);
+
+                for(int i=0; i<3; i++){
+                    map.getBucketPusher().setPosition(0);
+                    map.getLaunchBlocker().setPosition(-1);
+
+                    sleep(250);
+
+                    map.getBucketPusher().setPosition(1);
+                    map.getLaunchBlocker().setPosition(1);
+
+                    sleep(1000);
+                }
+                sleep(1000);
+                map.getFlyWheel().setPower(0);
+
+                break;
+
+            case ONE: // Zone B
                 telemetry.addData("Ran", pos);
                 telemetry.update();
                 sleep(1000);
-            case NONE:
+
+                robot.goToPosition(-100,200,map,0.6,true);
+
+                map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //map.getArm().setTargetPosition(100); CALCULATE THIS
+                map.getArm().setPower(1);
+                sleep(1000);
+                map.getLeftClaw().setPosition(-1);
+                map.getRightClaw().setPosition(1);
+                sleep(500);
+
+                //map.getArm().setTargetPosition(-100); CALCULATE
+                map.getArm().setPower(1);
+
+                robot.goToPosition(-150,100,map, 0.5, true);
+
+                map.getFlyWheel().setPower(1);
+                sleep(2000);
+
+                for(int i=0; i<3; i++){
+                    map.getBucketPusher().setPosition(0);
+                    map.getLaunchBlocker().setPosition(-1);
+
+                    sleep(250);
+
+                    map.getBucketPusher().setPosition(1);
+                    map.getLaunchBlocker().setPosition(1);
+
+                    sleep(1000);
+                }
+                sleep(1000);
+                map.getFlyWheel().setPower(0);
+
+                break;
+
+            case NONE: // Zone A
                 telemetry.addData("Ran", pos);
                 telemetry.update();
                 sleep(1000);
+
+                robot.goToPosition(-40,150, map,0.6,true);
+
+                map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                //map.getArm().setTargetPosition(100); CALCULATE THIS
+                map.getArm().setPower(1);
+                sleep(1000);
+                map.getLeftClaw().setPosition(-1);
+                map.getRightClaw().setPosition(1);
+                sleep(500);
+
+                //map.getArm().setTargetPosition(-100); CALCULATE
+                map.getArm().setPower(1);
+
+                robot.goToPosition(-150,100,map, 0.5, true);
+
+                map.getFlyWheel().setPower(1);
+                sleep(2000);
+
+                for(int i=0; i<3; i++){
+                    map.getBucketPusher().setPosition(0);
+                    map.getLaunchBlocker().setPosition(-1);
+
+                    sleep(250);
+
+                    map.getBucketPusher().setPosition(1);
+                    map.getLaunchBlocker().setPosition(1);
+
+                    sleep(1000);
+                }
+                sleep(1000);
+                map.getFlyWheel().setPower(0);
+
+                break;
+
         }
     }
     private void resetEncoders(DeviceMap map){

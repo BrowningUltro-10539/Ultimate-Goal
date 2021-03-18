@@ -40,6 +40,9 @@ public class FourRingsTesting extends LinearOpMode {
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
 
+        map.getLeftClaw().setPosition(-1);
+        map.getRightClaw().setPosition(1);
+
         telemetry.addData("", "ready");
         telemetry.update();
 
@@ -48,23 +51,33 @@ public class FourRingsTesting extends LinearOpMode {
         waitForStart();
 
         robot.initializeCoords(map, -50,0);
-
-        telemetry.update();
         sleep(1000);
 
-        robot.goToPosition(-50,250,map,0.6,true);
+        robot.goToPosition(-20,1, map,0.5,true);
 
-        //map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //map.getArm().setTargetPosition(100); CALCULATE THIS
-        //map.getArm().setPower(1);
         sleep(1000);
-        map.getLeftClaw().setPosition(-1);
-        map.getRightClaw().setPosition(1);
+
+        robot.goToPosition(-19,270, map, 0.5, true);
+
+        map.getArm().setTargetPosition(500);
+        map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        map.getArm().setPower(1);
+        map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        sleep(1000);
+
+        map.getLeftClaw().setPosition(1);
+        map.getRightClaw().setPosition(-1);
+
         sleep(500);
 
-        //map.getArm().setTargetPosition(-100); CALCULATE
-        //map.getArm().setPower(1);
+        map.getArm().setPower(-1);
 
+        sleep(500);
+
+        map.getArm().setPower(0);
+
+/*
         robot.goToPosition(-150,100,map, 0.5, true);
 
         map.getFlyWheel().setPower(1);
@@ -83,7 +96,7 @@ public class FourRingsTesting extends LinearOpMode {
         }
         sleep(1000);
         map.getFlyWheel().setPower(0);
-
+*/
 
     }
 

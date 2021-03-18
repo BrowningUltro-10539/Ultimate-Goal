@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.RobotInfo;
 
+import android.content.Context;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,6 +14,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 
 //import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
@@ -50,6 +55,8 @@ public final class DeviceMap {
     private static final String VUFORIA_KEY =
             "AarEEQn/////AAABmTY7WIRMk0JfvS6zOFAH7hpR83bPgnanU0IaXelPm37J2UTuq1zA+9GKHfyUSvyW5D129EmfhQHZzj9HaLFIrLfgsVZVzn3UW/EVPsI04l+b4a/WVGND74ox6Q0AySr6Ew+bcHdDo6V/08+rrIaeRM0c+oXekVE9JOmXnixp9sK23o258rbvuUAwcixAXAkhJQMIPluwhMNFAXqTYmrdNriiRbeXbBcNSokBQ51Z6qIf1VfrshpPwtJYaUyg/MtVlMcx3UhZfvUQNioFxB6iXQCEr9fhtP2X6lLqKE66AUR9CdIMpFuZ9y8z8uFtUv81soa7vAssZWXCkp+L9xkJRv91mmFI25KeEoZUWv29XXDz";
     private VuforiaLocalizer vuforia;
+
+    private OpenCvCamera camera;
 
 
     /* Local OpMode Members*/
@@ -154,6 +161,20 @@ public final class DeviceMap {
 
     }
 
+    public void setupOpenCV(HardwareMap map){
+        Context appContext = map.appContext;
+        int cameraMonitorViewId = appContext.getResources().getIdentifier("cameraMonitorViewId", "id", appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+        camera.openCameraDevice();
+    }
+
+    public void deactivateOpenCV(){
+        if(camera != null){
+            camera.stopStreaming();
+            camera.closeCameraDevice();
+        }
+    }
+
 
 
     public DcMotor getLeftTop(){
@@ -199,4 +220,6 @@ public final class DeviceMap {
     public TFObjectDetector getTfod(){
         return tfod;
     }
+
+    public OpenCvCamera getCamera(){ return camera; }
 }

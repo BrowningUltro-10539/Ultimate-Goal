@@ -26,6 +26,7 @@ public class CVTester extends LinearOpMode {
 
     @Override
     public void runOpMode(){
+        //When using UGRect Detector
         map.setupOpenCV(hardwareMap);
         //CHANGE THE PIPELINE VARIABLE from like pipeline1 to pipeline# (1-3) AND INSTANTIATE THE PIPELINE
         map.getCamera().setPipeline(pipeline3 = new OpenCVGenRect());
@@ -40,6 +41,11 @@ public class CVTester extends LinearOpMode {
                 telemetry.update();
             } else if(CvChoice == "pipeline2") {
                 Status status = pipeline2.rings();
+                pos = status;
+                telemetry.addData("Rings", pos);
+                telemetry.update();
+            } else if(CvChoice == "pipeline3"){
+                Status status = pipeline3.getStack();
                 pos = status;
                 telemetry.addData("Rings", pos);
                 telemetry.update();

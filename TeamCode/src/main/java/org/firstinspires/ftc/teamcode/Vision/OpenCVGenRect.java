@@ -33,6 +33,7 @@ public class OpenCVGenRect extends OpenCvPipeline {
     private int rectangleWidth = 10;
     private int rectangleHeight = 10;
 
+    public Status status;
     @Override
     public Mat processFrame(Mat input) {
         /**
@@ -80,7 +81,15 @@ public class OpenCVGenRect extends OpenCvPipeline {
         return input;
     }
 
-
+    public Status getStack() {
+        if (Math.abs(getTopAverage() - getBottomAverage()) < getThreshold() && (getTopAverage() <= 100 && getBottomAverage() <= 100)) {
+            return status.FOUR;
+        } else if (Math.abs(getTopAverage() - getBottomAverage()) < getThreshold() && (getTopAverage() >= 100 && getBottomAverage() >= 100)) {
+            return status.NONE;
+        } else {
+            return status.ONE;
+        }
+    }
     /**
      * Draw the rectangle onto the desired mat
      *

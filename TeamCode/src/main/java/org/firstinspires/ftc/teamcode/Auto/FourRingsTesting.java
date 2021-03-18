@@ -40,6 +40,8 @@ public class FourRingsTesting extends LinearOpMode {
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
 
+
+
         map.getLeftClaw().setPosition(-1);
         map.getRightClaw().setPosition(1);
 

@@ -16,9 +16,7 @@ public class TeleOpMecanum extends OpMode {
     DeviceMap map = new DeviceMap();
     double lastRuntime = 0;
     double timePass = getRuntime();
-    boolean shootingSequenceStarted = false;
-    boolean leftBumperPressed = false;
-    boolean rightBumperPressed = true;
+    boolean switchDirection = true;
 
     @Override
     public void init(){
@@ -41,8 +39,7 @@ public class TeleOpMecanum extends OpMode {
         double y = -gamepad1.left_stick_y;
         double right_stick_x = gamepad1.right_stick_x;
         double multiplier  = gamepad1.left_trigger + 1;
-        boolean lb = gamepad1.left_bumper;
-        boolean rb = gamepad1.right_bumper;
+
         //Music comes later
 
         if(gamepad1.left_trigger>0){
@@ -50,16 +47,21 @@ public class TeleOpMecanum extends OpMode {
             y=y/2;
         }
 
-        //This may have to be changed
-        if(lb && !leftBumperPressed && rightBumperPressed){
-            driver.move(map, y/multiplier, x/multiplier, right_stick_x/multiplier);
-            leftBumperPressed = true;
-            rightBumperPressed = false;
-        } else if(rb && !rightBumperPressed && leftBumperPressed){
-            driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
-            leftBumperPressed = false;
-            rightBumperPressed = true;
+        if(gamepad1.left_bumper){
+            switchDirection = true;
         }
+
+        if(gamepad1.right_bumper){
+            switchDirection = false;
+        }
+
+        if(switchDirection){
+            driver.move(map, y/multiplier, x/multiplier, right_stick_x/multiplier);
+        }else{
+            driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
+
+        }
+        //This may have to be changed
 
 
         map.getIntake().setPower(-gamepad2.left_stick_y);
@@ -68,7 +70,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
-            map.getBucket().setPosition(0.61);
+            map.getBucket().setPosition(0.63);
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){
@@ -98,10 +100,16 @@ public class TeleOpMecanum extends OpMode {
 
         //Shooting Controls
         if(gamepad2.a ){
+            map.getRingHolder().setPosition(1);
+            double startingTime = getRuntime();
+            while(Math.abs(startingTime - getRuntime()) < 0.3){
+                boolean waiting = true;
+            }
             map.getBucketPusher().setPosition(0);
-            map.getLaunchBlocker().setPosition(-1);
+            map.getLaunchBlocker().setPosition(-0.6);
         }
         else if(gamepad2.b ){
+            map.getRingHolder().setPosition(-1);
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
 

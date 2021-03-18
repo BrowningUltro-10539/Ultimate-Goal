@@ -53,22 +53,24 @@ public class FlywheelTimingTesting extends LinearOpMode {
 
         map.getFlyWheel().setPower(1);
 
-        map.getBucket().setPosition(0.61);
+        map.getBucket().setPosition(0.63);
 
         sleep(2000);
 
 
 
         for(int i=0; i<3; i++){
-            map.getLaunchBlocker().setPosition(0);
-            sleep(100);
+            map.getRingHolder().setPosition(1);
+            sleep(300);
+            map.getLaunchBlocker().setPosition(-0.6);
             map.getBucketPusher().setPosition(0);
             sleep(500);
 
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
+            map.getRingHolder().setPosition(-1);
 
-            sleep(1500);
+            sleep(1000);
         }
         sleep(1000);
         map.getFlyWheel().setPower(0);

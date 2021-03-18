@@ -22,14 +22,14 @@ public class OpenCVBoxes extends OpenCvPipeline {
     private Mat bottomSample = new Mat();   // For submat crops
 
     private Rect bottomRect = new Rect(     // Dimensions and locations for sampling
-            400,
             300,
+            800,
             100,
             20
     );
     private Rect topRect = new Rect(        // Dimensions and locations for sampling
-            400,
-            240,
+            300,
+            700,
             100,
             20
     );

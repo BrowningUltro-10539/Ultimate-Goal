@@ -44,6 +44,8 @@ public final class DeviceMap {
     private Servo rightClaw = null;
     private Servo launchBlocker = null;
     private Servo ringFlicker = null;
+    private Servo ringHolder = null;
+
     private BNO055IMU imu;
 
     /* Computer Vision */
@@ -127,8 +129,9 @@ public final class DeviceMap {
         rightClaw = map.get(Servo.class,"rightclaw");
         launchBlocker = map.get(Servo.class, "launchblocker");
         ringFlicker = map.get(Servo.class,"ringflicker");
+        ringHolder = map.get(Servo.class, "ringholder");
 
-        this.servos = new Servo[]{bucket, bucketPusher, leftClaw, rightClaw, launchBlocker, ringFlicker};
+        this.servos = new Servo[]{bucket, bucketPusher, leftClaw, rightClaw, launchBlocker, ringFlicker, ringHolder};
 
     }
 
@@ -216,6 +219,8 @@ public final class DeviceMap {
     public Servo getLaunchBlocker(){return  launchBlocker;}
 
     public Servo getRingFlicker(){return ringFlicker;}
+
+    public Servo getRingHolder(){return ringHolder;}
 
     public TFObjectDetector getTfod(){
         return tfod;

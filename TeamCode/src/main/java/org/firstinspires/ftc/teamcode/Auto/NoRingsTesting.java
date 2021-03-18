@@ -81,7 +81,7 @@ public class NoRingsTesting extends LinearOpMode {
 
         map.getFlyWheel().setPower(1);
 
-        map.getBucket().setPosition(0.61);
+        map.getBucket().setPosition(0.63);
 
         sleep(2000);
 

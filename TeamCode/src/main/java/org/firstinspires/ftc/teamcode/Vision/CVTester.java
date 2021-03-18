@@ -22,15 +22,15 @@ public class CVTester extends LinearOpMode {
     protected OpenCVBoxes pipeline1;
     protected OpenCVRegion pipeline2;
     protected OpenCVGenRect pipeline3;
-    private String CvChoice = "pipeline3";
+    private String CvChoice = "pipeline1";
 
     @Override
     public void runOpMode(){
         //When using UGRect Detector
         map.setupOpenCV(hardwareMap);
         //CHANGE THE PIPELINE VARIABLE from like pipeline1 to pipeline# (1-3) AND INSTANTIATE THE PIPELINE
-        map.getCamera().setPipeline(pipeline3 = new OpenCVGenRect());
-        map.getCamera().startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+        map.getCamera().setPipeline(pipeline1 = new OpenCVBoxes());
+        map.getCamera().startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
 
 
         while(!opModeIsActive()){

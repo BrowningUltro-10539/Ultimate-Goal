@@ -55,7 +55,7 @@ public class newCoordinateSystem {
 
     public void goToPosition(double targetX, double targetY, DeviceMap map, double power, boolean keepInitialAngle){
 
-        //TO BE IMPLEMENTED: CHANGING THE DIRECTIONS TO DRIVE BASED ON THE ANGLE THE ROBOT IS FACING
+        //ADD A CONDITION IF THE X OR Y TARGET COORDINATE IS EQUAL TO THE INITIAL COORDINATE
 
         //set a primary, secondary, tertiary and fourth direction, based on angle before movement.
         // then use those instead of "forward" etc.
@@ -194,10 +194,10 @@ public class newCoordinateSystem {
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
 
-            if(deltaX < 5 && deltaX > -5){
+            if(deltaX < 5 && deltaX > -5){ // UPDATE TO LOOK LIKE Q1
                 drive.moveUntil(forwardsDirection, Math.abs(deltaY), power, map, true);
                 yPos+=deltaY;
-            }else if (deltaY < 5 && deltaY > -5){
+            }else if (deltaY < 5 && deltaY > -5){ // UPDATE TO LOOK LIKE Q1
                 drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
                 xPos += deltaX;
 
@@ -260,10 +260,10 @@ public class newCoordinateSystem {
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
 
-            if(deltaX < 5 && deltaX > -5){
+            if(deltaX < 5 && deltaX > -5){ // UPDATE TO LOOK LIKE Q1
                 drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
 
-            }else if (deltaY < 5 && deltaY > -5){
+            }else if (deltaY < 5 && deltaY > -5){ // UPDATE TO LOOK LIKE Q1
                 drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
 
             }else if (angleToDrive < 60){
@@ -324,12 +324,12 @@ public class newCoordinateSystem {
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
 
-            if(deltaX < 5 && deltaX > -5){
+            if(deltaX < 5 && deltaX > -5){ // UPDATE TO LOOK LIKE Q1
                 drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
             }else if (deltaY < 5 && deltaY > -5){
                 drive.moveUntil(rightDirection, Math.abs(deltaX), power, map, true);
 
-            }else if (angleToDrive < 60){
+            }else if (angleToDrive < 60){ // UPDATE TO LOOK LIKE Q1
                 gyro.turn(angleToDrive, power, map);
 
                 updateAngle(map);

@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.Vision;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
+import org.opencv.core.CvType;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @TeleOp(name="CV Tester", group = "Vision")
@@ -12,21 +14,23 @@ public class CVTester extends LinearOpMode {
     /* Change the value of the string to test different pipelines ("pipeline1," "pipeline2," and "pipeline3")
     Pipeline 1: Bounding Boxes Matrices,
     Pipeline 2: Region Matrix,
-    Pipeline 3: Pixels
+    Pipeline 3: Generated Rectangle
      */
 
     DeviceMap map = new DeviceMap();
     protected Status pos;
     protected OpenCVBoxes pipeline1;
     protected OpenCVRegion pipeline2;
-    private String CvChoice = "pipeline2";
+    protected OpenCVGenRect pipeline3;
+    private String CvChoice = "pipeline3";
 
     @Override
     public void runOpMode(){
         map.setupOpenCV(hardwareMap);
         //CHANGE THE PIPELINE VARIABLE from like pipeline1 to pipeline# (1-3) AND INSTANTIATE THE PIPELINE
-        map.getCamera().setPipeline(pipeline2 = new OpenCVRegion());
-        map.getCamera().startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+        map.getCamera().setPipeline(pipeline3 = new OpenCVGenRect());
+        map.getCamera().startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+
 
         while(!opModeIsActive()){
             if(CvChoice == "pipeline1") {

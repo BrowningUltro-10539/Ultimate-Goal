@@ -52,6 +52,7 @@ public class CVTester extends LinearOpMode {
             }
 
 
+            waitForStart();
 
 
         }

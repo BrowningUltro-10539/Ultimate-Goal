@@ -21,10 +21,10 @@ public final class MecanumDrive {
 
 
 
-            map.getLeftTop().setPower(LF);
-            map.getRightTop().setPower(RF);
-            map.getLeftBottom().setPower(LB);
-            map.getRightBottom().setPower(RB);
+        map.getLeftTop().setPower(LF);
+        map.getRightTop().setPower(RF);
+        map.getLeftBottom().setPower(LB);
+        map.getRightBottom().setPower(RB);
 
 
 

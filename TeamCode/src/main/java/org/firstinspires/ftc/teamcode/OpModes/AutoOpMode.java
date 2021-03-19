@@ -76,6 +76,7 @@ public class AutoOpMode extends LinearOpMode {
 
         waitForStart();
 
+
         Status status = pipeline1.rings();
         pos = status;
 

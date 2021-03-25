@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@TeleOp(name = "TeleOpMecanum", group = "MecanumDrive")
+@TeleOp(name = "Tele-Op", group = "MecanumDrive")
 public class TeleOpMecanum extends OpMode {
     MecanumDrive driver;
     private ElapsedTime runtime = new ElapsedTime();

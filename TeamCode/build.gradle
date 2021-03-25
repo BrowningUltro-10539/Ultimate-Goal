@@ -25,4 +25,5 @@ dependencies {
     implementation 'org.openftc:easyopencv:1.4.1'
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'org.ejml:ejml-all:0.40'
 }

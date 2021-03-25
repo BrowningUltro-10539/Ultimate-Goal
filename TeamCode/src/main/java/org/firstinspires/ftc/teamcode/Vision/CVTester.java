@@ -20,8 +20,8 @@ public class CVTester extends LinearOpMode {
     DeviceMap map = new DeviceMap();
     protected Status pos;
     protected OpenCVBoxes pipeline1;
-    protected OpenCVRegion pipeline2;
-    protected OpenCVGenRect pipeline3;
+
+
     private String CvChoice = "pipeline1";
 
     @Override
@@ -36,16 +36,6 @@ public class CVTester extends LinearOpMode {
         while(!opModeIsActive()){
             if(CvChoice == "pipeline1") {
                 Status status = pipeline1.rings();
-                pos = status;
-                telemetry.addData("Rings", pos);
-                telemetry.update();
-            } else if(CvChoice == "pipeline2") {
-                Status status = pipeline2.rings();
-                pos = status;
-                telemetry.addData("Rings", pos);
-                telemetry.update();
-            } else if(CvChoice == "pipeline3"){
-                Status status = pipeline3.getStack();
                 pos = status;
                 telemetry.addData("Rings", pos);
                 telemetry.update();

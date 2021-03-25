@@ -24,6 +24,8 @@ public class TeleOpMecanum extends OpMode {
         telemetry.addData("Status:", " Initialized");
 
         driver = new MecanumDrive();
+
+
     }
 
     @Override
@@ -31,7 +33,14 @@ public class TeleOpMecanum extends OpMode {
     }
 
     @Override
-    public void start(){ runtime.reset();}
+    public void start(){
+        map.getRingFlicker().setPosition(0);
+        map.getRingHolder().setPosition(-1);
+        map.getBucketPusher().setPosition(1);
+        map.getBucket().setPosition(0.5);
+        runtime.reset();
+    }
+
 
     @Override
     public void loop(){
@@ -139,6 +148,14 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.dpad_right){
             map.getLeftClaw().setPosition(1);
             map.getRightClaw().setPosition(-1);
+        }
+
+        if(gamepad2.right_bumper) {
+            map.getFlyWheel().setPower(-0.3);
+        }
+
+        if(gamepad2.left_bumper){
+            map.getFlyWheel().setPower(0.0);
         }
 
 

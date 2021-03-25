@@ -1,20 +1,24 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AutoTesting;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.Auto.imuDrive;
+import org.firstinspires.ftc.teamcode.Auto.newCoordinateSystem;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@Autonomous(name = "Testing Auto Coords")
-public class CoordinatesTestingAuto extends LinearOpMode {
+@Disabled
+@Autonomous(name = "Flywheel Testing")
+public class FlywheelTimingTesting extends LinearOpMode {
 
 
     @Override
     public void runOpMode() {
         DeviceMap map = new DeviceMap();
 
-        OdometryDrive drive = new OdometryDrive();
         imuDrive gyro = new imuDrive();
         newCoordinateSystem robot = new newCoordinateSystem();
 
@@ -39,72 +43,43 @@ public class CoordinatesTestingAuto extends LinearOpMode {
         //Need to change back into the IMU mode to use the gyro
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
+        map.getLeftClaw().setPosition(-1);
+        map.getRightClaw().setPosition(1);
 
         telemetry.addData("", "ready");
         telemetry.update();
+
 
         resetEncoders(map);
 
         waitForStart();
 
-        robot.initializeCoords(map, 0,0);
 
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
-        sleep(1000);
+        map.getFlyWheel().setPower(1);
 
-        //Move forwards
+        map.getBucket().setPosition(0.63);
 
-        robot.goToPosition(-50, 50, map, 0.3, true);
+        sleep(2000);
 
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
-        sleep(1000);
 
-        //Turn left 90
-        gyro.turn(90, 0.3, map);
-        robot.updateAngle(map);
 
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
+        for(int i=0; i<3; i++){
+            map.getRingHolder().setPosition(1);
+            sleep(300);
+            map.getLaunchBlocker().setPosition(-0.7);
+            map.getBucketPusher().setPosition(0);
+            sleep(500);
 
-        sleep (1000);
+            map.getBucketPusher().setPosition(1);
+            map.getLaunchBlocker().setPosition(1);
+            map.getRingHolder().setPosition(-1);
 
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Direction", robot.getCurrentAngle());
-        telemetry.update();
+            sleep(1500);
+        }
+        sleep(1500);
+        map.getFlyWheel().setPower(0);
 
-        robot.goToPosition(100, 30, map, 0.3, true);
-        sleep(1000);
-
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
-
-        gyro.turn(-90, 0.3, map);
-        sleep(1000);
-
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
-
-        robot.updateAngle(map);
-
-        robot.goToPosition(0,0, map, 0.3, true);
-
-        telemetry.addData("X", robot.getXPos());
-        telemetry.addData("Y", robot.getYPos());
-        telemetry.addData("Angle", robot.getCurrentAngle());
-        telemetry.update();
+        map.getBucket().setPosition(0.5);
 
         sleep(1000);
 

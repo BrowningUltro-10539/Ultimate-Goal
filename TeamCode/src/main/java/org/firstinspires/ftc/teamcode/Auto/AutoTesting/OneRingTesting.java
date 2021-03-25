@@ -1,14 +1,18 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AutoTesting;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Auto.imuDrive;
+import org.firstinspires.ftc.teamcode.Auto.newCoordinateSystem;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@Autonomous(name = "Auto 0 Rings")
-public class NoRingsTesting extends LinearOpMode {
+@Disabled
+@Autonomous(name = "Auto 1 Ring")
+public class OneRingTesting extends LinearOpMode {
 
 
     @Override
@@ -40,58 +44,41 @@ public class NoRingsTesting extends LinearOpMode {
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
 
-
-        map.getLeftClaw().setPosition(-1);
-        map.getRightClaw().setPosition(1);
-
         telemetry.addData("", "ready");
         telemetry.update();
-
 
         resetEncoders(map);
 
         waitForStart();
 
-        robot.initializeCoords(map, -50,0);
+        robot.initializeCoords(map, 0,0);
+
+        telemetry.update();
         sleep(1000);
 
-        robot.goToPosition(-20,1, map,0.5,true);
+        robot.goToPosition(-100,200,map,0.6,true);
 
+        //map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //map.getArm().setTargetPosition(100); CALCULATE THIS
+        //map.getArm().setPower(1);
         sleep(1000);
-
-        robot.goToPosition(-19,130, map, 0.5, true);
-
-        map.getArm().setTargetPosition(500);
-        map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        map.getArm().setPower(1);
-        map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        sleep(1000);
-        map.getLeftClaw().setPosition(1);
-        map.getRightClaw().setPosition(-1);
+        map.getLeftClaw().setPosition(-1);
+        map.getRightClaw().setPosition(1);
         sleep(500);
 
-        map.getArm().setPower(-1);
-        sleep(500);
-        map.getArm().setPower(0);
+        //map.getArm().setTargetPosition(-100); CALCULATE
+        //map.getArm().setPower(1);
 
-        robot.goToPosition(-100,100,map, 0.5, true);
-
-        gyro.turn(90, 0.5, map);
+        robot.goToPosition(-150,100,map, 0.5, true);
 
         map.getFlyWheel().setPower(1);
-
-        map.getBucket().setPosition(0.63);
-
         sleep(2000);
-
-
 
         for(int i=0; i<3; i++){
             map.getBucketPusher().setPosition(0);
             map.getLaunchBlocker().setPosition(-1);
 
-            sleep(350);
+            sleep(250);
 
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
@@ -100,10 +87,6 @@ public class NoRingsTesting extends LinearOpMode {
         }
         sleep(1000);
         map.getFlyWheel().setPower(0);
-
-        map.getBucket().setPosition(0.5);
-
-        sleep(1000);
 
 
     }

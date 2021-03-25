@@ -57,6 +57,14 @@ public class AutoOpMode extends LinearOpMode {
         map.getLeftClaw().setPosition(-1);
         map.getRightClaw().setPosition(1);
 
+        map.getRingFlicker().setPosition(0);
+        map.getRingHolder().setPosition(-1);
+        map.getBucketPusher().setPosition(1);
+        map.getBucket().setPosition(0.5);
+
+
+
+
 
         telemetry.addData("", "ready");
         telemetry.update();
@@ -98,12 +106,11 @@ public class AutoOpMode extends LinearOpMode {
 
                 robot.goToPosition(-19,270, map, 0.5, true);
 
-                map.getArm().setTargetPosition(500);
-                map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 map.getArm().setPower(1);
-                map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
                 sleep(1000);
+
+                map.getArm().setPower(0);
 
                 map.getLeftClaw().setPosition(1);
                 map.getRightClaw().setPosition(-1);
@@ -121,14 +128,28 @@ public class AutoOpMode extends LinearOpMode {
 
                 gyro.turn(84, 0.5, map);
 
-                map.getFlyWheel().setPower(1);
+                map.getFlyWheel().setPower(-0.3);
+
+                map.getRingFlicker().setPosition(0.5);
+                sleep(500);
+
+                map.getLaunchBlocker().setPosition(1);
+
+                map.getRingFlicker().setPosition(0);
+                sleep(500);
 
                 map.getBucket().setPosition(0.63);
+
+                sleep(100);
+
+                map.getFlyWheel().setPower(1);
+                sleep(500);
+
 
                 for(int i=0; i<3; i++){
                     map.getRingHolder().setPosition(1);
                     sleep(300);
-                    map.getLaunchBlocker().setPosition(-0.6);
+                    map.getLaunchBlocker().setPosition(-0.7);
                     map.getBucketPusher().setPosition(0);
                     sleep(500);
 
@@ -164,7 +185,7 @@ public class AutoOpMode extends LinearOpMode {
 
                 map.getArm().setPower(1);
 
-                sleep(1500);
+                sleep(1000);
 
                 map.getArm().setPower(0);
 
@@ -183,18 +204,33 @@ public class AutoOpMode extends LinearOpMode {
 
                 drive.moveUntil("Backward", 60, 0.5, map, true);
 
-                gyro.turn(84, 0.5, map);
+                gyro.turn(85, 0.5, map);
+
+
+                map.getFlyWheel().setPower(-0.3);
+
+                map.getRingFlicker().setPosition(0.5);
+                sleep(500);
+
+                map.getLaunchBlocker().setPosition(1);
+                map.getRingFlicker().setPosition(0);
+                sleep(500);
+
 
                 map.getFlyWheel().setPower(1);
+                sleep(500);
+
+
 
                 map.getBucket().setPosition(0.63);
 
                 sleep(1000);
 
+
                 for(int i=0; i<3; i++){
                     map.getRingHolder().setPosition(1);
                     sleep(300);
-                    map.getLaunchBlocker().setPosition(-0.6);
+                    map.getLaunchBlocker().setPosition(-0.7);
                     map.getBucketPusher().setPosition(0);
                     sleep(500);
 
@@ -228,27 +264,46 @@ public class AutoOpMode extends LinearOpMode {
 
                 robot.goToPosition(-19,130, map, 0.5, true);
 
-                map.getArm().setTargetPosition(500);
-                map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 map.getArm().setPower(1);
-                map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
                 sleep(1000);
+
+                map.getArm().setPower(0);
+
                 map.getLeftClaw().setPosition(1);
                 map.getRightClaw().setPosition(-1);
+
                 sleep(500);
 
                 map.getArm().setPower(-1);
+
                 sleep(500);
+
                 map.getArm().setPower(0);
 
                 robot.goToPosition(-90,60, map, 0.5, true);
 
                 gyro.turn(84, 0.5, map);
 
+                map.getFlyWheel().setPower(-0.3);
+
+
                 robot.updateAngle(map);
 
+                sleep(500);
+
+                map.getRingFlicker().setPosition(0.5);
+                sleep(500);
+
+                map.getLaunchBlocker().setPosition(1);
+                map.getRingFlicker().setPosition(0);
+                sleep(500);
+
                 map.getFlyWheel().setPower(1);
+
+                sleep(500);
+
+
 
                 map.getBucket().setPosition(0.63);
 
@@ -257,7 +312,7 @@ public class AutoOpMode extends LinearOpMode {
                 for(int i=0; i<3; i++){
                     map.getRingHolder().setPosition(1);
                     sleep(300);
-                    map.getLaunchBlocker().setPosition(-0.6);
+                    map.getLaunchBlocker().setPosition(-0.7);
                     map.getBucketPusher().setPosition(0);
                     sleep(500);
 

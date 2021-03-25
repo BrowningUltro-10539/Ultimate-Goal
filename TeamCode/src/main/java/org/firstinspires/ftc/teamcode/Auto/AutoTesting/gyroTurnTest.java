@@ -1,28 +1,29 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AutoTesting;
+
+import androidx.core.view.WindowInsetsAnimationCompat;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-//import org.firstinspires.ftc.teamcode.OdometryDrive;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import org.firstinspires.ftc.teamcode.Auto.imuDrive;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-
-@Autonomous(name = "Move to position test strafe")
-public class MoveToPositionStrafe extends LinearOpMode {
-
-    private static double wheelDiameter = 6;
-    private static double countsPerRevolution = 8192;
-
-    private static double wheelCircumference = wheelDiameter * Math.PI;
-    private static double distancePerCount = wheelCircumference / countsPerRevolution;
+@Disabled
+@Autonomous(name = "Gyro turn test")
+public class gyroTurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode(){
         DeviceMap map = new DeviceMap();
-        OdometryDrive drive = new OdometryDrive();
         map.init(hardwareMap);
+        imuDrive drive = new imuDrive();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -45,18 +46,36 @@ public class MoveToPositionStrafe extends LinearOpMode {
         sleep(100); //Changing modes again requires a delay
 
         telemetry.addData("","ready");
+        double firstAngle = checkOrientation(map.getImu());
+        telemetry.addData("first angle",firstAngle);
         telemetry.update();
 
         waitForStart();
+        drive.turn(90,0.3, map);
+        sleep(1000);
+        drive.turn(-90, 0.3, map);
+        sleep(1000);
+        drive.turn(180,0.3,map);
+        sleep(1000);
+        drive.turn(90,0.3, map);
+        sleep(1000);
+        drive.turn(-180, 0.3, map);
+        sleep(1000);
+        drive.turn(-90,0.3, map);
 
-        //Y is for strafing, X is for movement in line with wheels
-        DcMotor encY = map.getLeftTop();
-        DcMotor encX = map.getRightBottom();
+    }
 
 
-        drive.moveUntil("Left",70,0.3, map,true);
 
-        drive.moveUntil("Right", 70, 0.3, map, true);
+    private double checkOrientation(BNO055IMU imu){
+        Orientation current = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        return current.firstAngle;
+    }
 
+    private void stop(DeviceMap map){
+        map.getLeftTop().setPower(0);
+        map.getRightTop().setPower(0);
+        map.getLeftBottom().setPower(0);
+        map.getRightBottom().setPower(0);
     }
 }

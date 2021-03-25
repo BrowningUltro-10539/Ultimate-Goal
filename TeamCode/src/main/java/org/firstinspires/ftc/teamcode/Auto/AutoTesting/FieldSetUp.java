@@ -1,32 +1,28 @@
-package org.firstinspires.ftc.teamcode.Auto;
+package org.firstinspires.ftc.teamcode.Auto.AutoTesting;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.Auto.OdometryDrive;
+import org.firstinspires.ftc.teamcode.Auto.imuDrive;
+import org.firstinspires.ftc.teamcode.Auto.newCoordinateSystem;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@Autonomous(name = "Auto 4 Rings")
-public class FourRingsTesting extends LinearOpMode {
-
-
-    @Override
-    public void runOpMode() {
+/* This class is meant to help setup the field so that our robot will go to exactly -50, 0 so that our motion is much more accurate */
+@Disabled
+@Autonomous(name="FieldSetUp", group = "Setup")
+public class FieldSetUp extends LinearOpMode {
+    public void runOpMode(){
         DeviceMap map = new DeviceMap();
-
         imuDrive gyro = new imuDrive();
+        OdometryDrive drive = new OdometryDrive();
         newCoordinateSystem robot = new newCoordinateSystem();
-
         map.init(hardwareMap);
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
 
-        map.getImu().initialize(parameters);
-
-
-        //FIX IMU FOR VERTICAL MOUNTING
         byte AXIS_MAP_CONFIG_BYTE = 0x6; //This is what to write to the AXIS_MAP_CONFIG register to swap x and z axes
         byte AXIS_MAP_SIGN_BYTE = 0x1; //This is what to write to the AXIS_MAP_SIGN register to negate the z axis
         //Need to be in CONFIG mode to write to registers
@@ -40,11 +36,6 @@ public class FourRingsTesting extends LinearOpMode {
         map.getImu().write8(BNO055IMU.Register.OPR_MODE, BNO055IMU.SensorMode.IMU.bVal & 0x0F);
         sleep(100); //Changing modes again requires a delay
 
-
-
-        map.getLeftClaw().setPosition(-1);
-        map.getRightClaw().setPosition(1);
-
         telemetry.addData("", "ready");
         telemetry.update();
 
@@ -52,56 +43,15 @@ public class FourRingsTesting extends LinearOpMode {
 
         waitForStart();
 
-        robot.initializeCoords(map, -50,0);
-        sleep(1000);
-
-        robot.goToPosition(-20,1, map,0.5,true);
+        robot.initializeCoords(map, 0, 0);
 
         sleep(1000);
 
-        robot.goToPosition(-19,270, map, 0.5, true);
-
-        map.getArm().setTargetPosition(500);
-        map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        map.getArm().setPower(1);
-        map.getArm().setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
+        robot.goToPosition(-50,2, map,0.5,true);
         sleep(1000);
-
-        map.getLeftClaw().setPosition(1);
-        map.getRightClaw().setPosition(-1);
-
-        sleep(500);
-
-        map.getArm().setPower(-1);
-
-        sleep(500);
-
-        map.getArm().setPower(0);
-
-/*
-        robot.goToPosition(-150,100,map, 0.5, true);
-
-        map.getFlyWheel().setPower(1);
-        sleep(2000);
-
-        for(int i=0; i<3; i++){
-            map.getBucketPusher().setPosition(0);
-            map.getLaunchBlocker().setPosition(-1);
-
-            sleep(250);
-
-            map.getBucketPusher().setPosition(1);
-            map.getLaunchBlocker().setPosition(1);
-
-            sleep(1000);
-        }
-        sleep(1000);
-        map.getFlyWheel().setPower(0);
-*/
+        robot.goToPosition(-50, 0, map, 0.2, true);
 
     }
-
 
     private void resetEncoders(DeviceMap map){
         map.getRightBottom().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -115,5 +65,5 @@ public class FourRingsTesting extends LinearOpMode {
         map.getLeftTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
 }
+

@@ -23,9 +23,11 @@ public class BasePipeline {
         camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
     }
 
-    public void start(){
-        camera.openCameraDeviceAsync(() -> camera.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT));
+    public void start() {
+        camera.openCameraDevice();
+        camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
     }
+
 
     public void stop(){
         camera.stopStreaming();

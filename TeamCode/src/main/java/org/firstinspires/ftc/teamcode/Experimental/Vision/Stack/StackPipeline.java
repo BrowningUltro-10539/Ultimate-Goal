@@ -49,7 +49,7 @@ public class StackPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         // Process Image
         processor.saveMatToDisk("raw.jpg", input);
-        input = new Mat(input, new Rect(140, 30, 90, 90));
+        input = new Mat(input, new Rect(140, 30, 190, 190));
         processed = processor.processFrame(input)[0];
 
         // Find Contours

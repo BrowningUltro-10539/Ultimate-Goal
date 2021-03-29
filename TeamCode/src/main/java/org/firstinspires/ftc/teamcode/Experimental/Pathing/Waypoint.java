@@ -12,7 +12,7 @@ public class Waypoint {
 
     /**
      * Generates Waypoint for differential drive constraints: velocity and acceleration are in
-     * the same direction as heading
+     * the same direction as heading; Might try out differential drive next season;
      */
     public Waypoint(double x, double y, double theta, double velocity, double acceleration, double angularVelocity, double time) {
         this.x = x;

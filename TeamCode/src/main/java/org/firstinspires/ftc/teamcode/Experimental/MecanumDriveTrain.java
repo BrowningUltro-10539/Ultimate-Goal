@@ -13,6 +13,7 @@ import static java.lang.Math.PI;
 
 public class MecanumDriveTrain {
 
+    /* Third wheel odometry set up for next year */
     private DeviceMap map;
     private DcMotor leftTop;
     private DcMotor rightTop;
@@ -29,23 +30,22 @@ public class MecanumDriveTrain {
     /* Odometry */
     public double pod1 = 0;
     public double pod2 = 0;
-    public double pod3 = 0;
+//    public double pod3 = 0;
     private double lastpod1 = 0;
     private double lastpod2 = 0;
-    private double lastpod3 = 0;
+//    private double lastpod3 = 0;
     private double deltapod1;
     private double deltapod2;
-    private double deltapod3;
+//    private double deltapod3;
 
     /* Odometry Constants */
     public static double ticksToInch1 = 0.00588046031;
-    public static double ticksToInch2 = 0.00582564639;
+//    public static double ticksToInch2 = 0.00582564639; Will be used for the third wheel odometry (second X wheel)
     public static double ticksToInch3 = 0.00583427502;
     public static double OdometryTrackWidth = 13.565;
     public static double OdometryHorizontalOffset = -2.845;
     private final double OdometryHeadingThreshold = PI/8;
-    public int zero1, zero2, zero3;
-
+    public int zero1, zero2; //zero3,
 
     /* Motor Caching */
     private double lastRTPower = 0;
@@ -151,15 +151,17 @@ public class MecanumDriveTrain {
     /* Updating Position from Odometry */
     public void updatePose(){
         try {
-            pod1 = rightTop.getCurrentPosition() * -ticksToInch1;
-            pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
-            pod3 = leftBottom.getCurrentPosition() * ticksToInch3;
+            // Set up for third wheel odometry for next year
+            pod1 = rightBottom.getCurrentPosition() * -ticksToInch1;
+//            pod1 = rightTop.getCurrentPosition() * -ticksToInch1;
+//            pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
+            pod2 = leftTop.getCurrentPosition() * ticksToInch3;
 
             deltapod1 = pod1 - lastpod1;
             deltapod2 = pod2 - lastpod2;
-            deltapod3 = pod3 - lastpod3;
+//            deltapod3 = pod3 - lastpod3;
 
-            if(!(deltapod1 == 0 && deltapod2 == 0 && deltapod3 == 0)) {
+            if(!(deltapod1 == 0 && deltapod2 == 0 /* && deltapod3 == 0 */)) {
                 if (deltapod1 == 0) {
                     Log.w("Pod-Delta-Log", "pod1 delta 0 ");
                     zero1++;
@@ -169,17 +171,12 @@ public class MecanumDriveTrain {
                     Log.w("Pod-Delta-Log", "pod2 delta 0");
                     zero2++;
                 }
-
-                if (deltapod3 == 0) {
-                    Log.w("Pod-Delta-Log", "pod3 delta 0");
-                    zero3++;
-                }
             }
 
             deltaHeading = (deltapod2 - deltapod1) / OdometryTrackWidth;
 
-            double localX = (deltapod1 + deltapod2) / 2;
-            double localY = deltapod3 - deltaHeading * OdometryHorizontalOffset;
+            double localX = (deltapod1) / 2;
+            double localY = deltapod2 - deltaHeading * OdometryHorizontalOffset;
 
             if(deltaHeading < OdometryHeadingThreshold) {
                 x += localX * Math.cos(theta) - localY * Math.sin(theta);
@@ -198,7 +195,6 @@ public class MecanumDriveTrain {
 
             lastpod1 = pod1;
             lastpod2 = pod2;
-            lastpod3 = pod3;
         } catch (Exception e) { e.printStackTrace(); }
 
     }

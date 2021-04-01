@@ -173,7 +173,7 @@ public class MecanumDriveTrain {
                 }
             }
 
-            deltaHeading = (deltapod2 - deltapod1) / OdometryTrackWidth;
+            deltaHeading = (deltapod1) / OdometryTrackWidth;
 
             double localX = (deltapod1) / 2;
             double localY = deltapod2 - deltaHeading * OdometryHorizontalOffset;

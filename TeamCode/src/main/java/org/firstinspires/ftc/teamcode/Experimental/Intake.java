@@ -38,11 +38,11 @@ public class Intake {
 
     }
 
-    public void IntakeOn(){
+    public void intakeOn(){
         setPower(1);
     }
 
-    public void IntakeOff(){
+    public void intakeOff(){
         setPower(0);
     }
 

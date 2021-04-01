@@ -40,7 +40,7 @@ public class MecanumDriveTrain {
 
     /* Odometry Constants */
     public static double ticksToInch1 = 0.00588046031;
-//    public static double ticksToInch2 = 0.00582564639; Will be used for the third wheel odometry (second X wheel)
+//    public static double ticksToInch2 = 0.00582564639; Will be used for the third wheel odometry (second X wheel);
     public static double ticksToInch3 = 0.00583427502;
     public static double OdometryTrackWidth = 13.565;
     public static double OdometryHorizontalOffset = -2.845;

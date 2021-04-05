@@ -49,7 +49,6 @@ public class TeleOpMecanum extends OpMode {
         double right_stick_x = gamepad1.right_stick_x;
         double multiplier  = gamepad1.left_trigger + 1;
 
-        //Music comes later
 
         if(gamepad1.left_trigger>0){
             x=x/2;

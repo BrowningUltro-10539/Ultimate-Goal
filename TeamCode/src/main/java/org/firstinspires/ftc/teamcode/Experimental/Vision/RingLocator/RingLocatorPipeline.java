@@ -24,7 +24,7 @@ public class RingLocatorPipeline extends OpenCvPipeline {
     public static double ANGLE_MIN = 70;
     public static double ANGLE_MAX = 110;
 
-    // Camera Constants
+    // Camera Constants; Need to be changed
     public static double CAM_HEIGHT = 19;
     public static double CAM_FRONT = 3.25;
     public static double CAM_LEFT = 7.75;

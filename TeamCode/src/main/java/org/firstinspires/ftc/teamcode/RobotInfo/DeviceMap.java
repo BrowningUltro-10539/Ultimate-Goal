@@ -74,8 +74,6 @@ public final class DeviceMap {
         setUpImu(hardwareMap);
         setupServos(hardwareMap);
         setUpImu(hardwareMap);
-        //initTfod(hardwareMap);
-        //initVuforia();
     }
 
 

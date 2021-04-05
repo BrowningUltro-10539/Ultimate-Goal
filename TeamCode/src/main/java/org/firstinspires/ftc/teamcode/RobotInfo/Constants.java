@@ -5,7 +5,7 @@ public class Constants {
     /* Class that contains all of the constant variables that we may need for our OpModes.
        Helps minimize confusion when changing the value of a servo position or how far
        we want our robot to go to if we are performing the same type of operations for
-       any number of situations. */
+       a number of situations. */
 
     // Init: Intake
     private int INIT_LEFT_CLAW_POSITION = -1;

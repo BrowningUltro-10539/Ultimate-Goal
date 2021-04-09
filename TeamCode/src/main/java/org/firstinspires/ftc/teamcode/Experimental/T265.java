@@ -49,6 +49,75 @@ public class T265 {
     public void startCam(){
         t265Camera.start();
     }
+    public void exportMap() {
+        if (exportingMap) {
+            exportingMap = false;
+            t265Camera.exportRelocalizationMap(mapPath);
+        }
+    }
+
+    public void stopCam() {
+        t265Camera.stop();
+    }
+
+    public void setCameraPose(double x, double y, double theta) {
+        x -= -xOffset * Math.sin(theta) - yOffset * Math.cos(theta);
+        y -= xOffset * Math.cos(theta) - yOffset * Math.sin(theta);
+
+        t265Camera.setPose(new Pose2d(y * INCH_TO_METER, -x * INCH_TO_METER, new Rotation2d(theta)));
+    }
+
+    public void sendOdometryData(double vx, double vy, double theta, double w) {
+        double r = Math.hypot(xOffset, yOffset);
+        theta += Math.atan2(yOffset, xOffset) - PI/2;
+        t265Camera.sendOdometry(vy + r * w * Math.sin(theta), -vx - r * w * Math.cos(theta));
+    }
+
+    public void updateCamPose() {
+        T265Camera.CameraUpdate state = t265Camera.getLastReceivedCameraUpdate();
+
+        Translation2d translation = new Translation2d(state.pose.getTranslation().getX() / INCH_TO_METER, state.pose.getTranslation().getY() / INCH_TO_METER);
+        Rotation2d rotation = state.pose.getRotation();
+
+        x = -translation.getY() - xOffset * Math.sin(theta) - yOffset * Math.cos(theta);
+        y = translation.getX() + xOffset * Math.cos(theta) - yOffset * Math.sin(theta);
+        theta = rotation.getRadians();
+
+        if (state.confidence == T265Camera.PoseConfidence.High) {
+            confidence = 3;
+        } else if (state.confidence == T265Camera.PoseConfidence.Medium) {
+            confidence = 2;
+        } else if (state.confidence == T265Camera.PoseConfidence.Low) {
+            confidence = 1;
+        } else {
+            confidence = 0;
+        }
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public double getTheta() {
+        return theta;
+    }
+
+    public String confidenceColor() {
+        switch (confidence) {
+            case 3:
+                return "green";
+            case 2:
+                return "yellow";
+            case 1:
+                return "orange";
+            default :
+                return "red";
+        }
+    }
 
 
 }

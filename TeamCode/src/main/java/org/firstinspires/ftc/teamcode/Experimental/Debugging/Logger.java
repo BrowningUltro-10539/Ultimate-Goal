@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Experimental.Debugging;
 
 import android.annotation.SuppressLint;
 
-import org.firstinspires.ftc.teamcode.Experimental.Robot;
+import org.firstinspires.ftc.teamcode.Experimental.Util.Robot;
 
 import java.io.BufferedReader;
 import java.io.File;

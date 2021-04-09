@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.Experimental.Pathing;
 
-import org.firstinspires.ftc.teamcode.Experimental.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Experimental.Util.MecanumDriveTrain;
 
 public class Target {
     private double xTarget;

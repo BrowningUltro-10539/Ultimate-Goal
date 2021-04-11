@@ -15,6 +15,7 @@ import static org.firstinspires.ftc.teamcode.Experimental.Debugging.Dashboard.se
 @TeleOp(name = "EXP: DT265")
 @Config
 public class DashboardT265 extends LinearOpMode{
+    /* TODO: Eric, please change these values (x, y) (not theta) as I'm only doing these off of arbitrary values. */
     public static double startX = 50;
     public static double startY = 0;
     public double startTheta = Math.PI/2;

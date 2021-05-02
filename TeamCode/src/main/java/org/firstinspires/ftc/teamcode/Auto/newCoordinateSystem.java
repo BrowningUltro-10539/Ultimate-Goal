@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 public class newCoordinateSystem {
     OdometryDrive drive = new OdometryDrive();
     imuDrive gyro = new imuDrive();
+    vectorizedTurns vectorTurn = new vectorizedTurns();
 
     double xPos;
     double yPos;
@@ -53,313 +54,324 @@ public class newCoordinateSystem {
         currentAngle = currentOrientation.firstAngle;
     }
 
-    public void goToPosition(double targetX, double targetY, DeviceMap map, double power, boolean keepInitialAngle){
-
-        //TO BE IMPLEMENTED: CHANGING THE DIRECTIONS TO DRIVE BASED ON THE ANGLE THE ROBOT IS FACING
-
-        //set a primary, secondary, tertiary and fourth direction, based on angle before movement.
-        // then use those instead of "forward" etc.
-
-        String forwardsDirection = "Forward";
-        String backwardsDirection = "Backward";
-        String leftDirection = "Left";
-        String rightDirection = "Right";
+    public void goToPosition(double targetX, double targetY, DeviceMap map, double power, boolean keepInitialAngle, boolean vectorized){
 
 
 
-        //Set directions to drive based on direction facing
-        //Initial Direction
-        if(currentAngle < 45 && currentAngle > -45) {
-            forwardsDirection = "Forward";
-            backwardsDirection = "Backward";
-            leftDirection = "Left";
-            rightDirection = "Right";
-            forwardsBackwardsEnc = encY;
-            leftRightEnc = encX;
-        }
-        //90 degrees to the left of initial direction
-        else if(currentAngle > 45 && currentAngle < 135) {
-            forwardsDirection = "Right";
-            backwardsDirection = "Left";
-            leftDirection = "Forward";
-            rightDirection = "Backward";
-            forwardsBackwardsEnc = encX;
-            leftRightEnc = encY;
-        }
-        //90 degrees to the right of initial direction
-        else if (currentAngle < -45 && currentAngle > 135){
-            forwardsDirection = "Left";
-            backwardsDirection = "Right";
-            leftDirection = "Backward";
-            rightDirection = "Forward";
-            forwardsBackwardsEnc = encX;
-            leftRightEnc = encY;
-        }
-        //180 degrees from initial direction
-        else {
-            forwardsDirection = "Backward";
-            backwardsDirection = "Forward";
-            leftDirection = "Right";
-            rightDirection = "Left";
-            forwardsBackwardsEnc = encY;
-            leftRightEnc = encX;
-        }
+        if(vectorized){
 
-
-
-        //Quadrant 1
-        if(targetX > xPos && targetY > yPos ){
+            //Calc target length for each turn
             double deltaX = targetX - xPos;
             double deltaY = targetY - yPos;
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-            double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
+            double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
+            //FIX TURN DISTANCE
+            vectorTurn.vectorizedTurn(angleToDrive, power, deltaX, deltaY, currentAngle, map,this);
 
-            if(deltaX < 5 && deltaX > -5){ //Y direction
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
-                drive.moveUntil(forwardsDirection, Math.abs(deltaY), power, map, true);
-
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                yPos +=  distanceDriven;
-
-            }else if (deltaY < 5 && deltaY > -5){ //X direction
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(rightDirection, Math.abs(deltaX), power, map, true);
-
-                double distanceDriven = countsToCm(leftRightEnc.getCurrentPosition() - startingDistance);
-                xPos += distanceDriven;
+        }else {
 
 
-            }else if (angleToDrive<60){
-                gyro.turn(-angleToDrive,power,map);
-                updateAngle(map);
+            //set a primary, secondary, tertiary and fourth direction, based on angle before movement.
+            // then use those instead of "forward" etc.
 
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
-                drive.moveUntil(forwardsDirection, distanceToDrive, power, map, true);
-
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                updateAngle(map);
-                xPos +=  Math.abs(Math.sin(Math.abs(currentAngle)  * degreesToRadians)) * distanceDriven;
-                yPos +=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+            String forwardsDirection = "Forward";
+            String backwardsDirection = "Backward";
+            String leftDirection = "Left";
+            String rightDirection = "Right";
 
 
-                if(keepInitialAngle){
-                    gyro.turn(angleToDrive, power, map);
-                    updateAngle(map);
-                }
-
-            }else{
-
-                double strafeAngle = 90-angleToDrive;
-                gyro.turn(strafeAngle, power, map);
-                updateAngle(map);
-
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(rightDirection, distanceToDrive, power, map, true);
-
-                double distanceDriven = countsToCm(leftRightEnc.getCurrentPosition() - startingDistance);
-                updateAngle(map);
-                xPos +=  Math.abs(Math.sin(Math.abs(currentAngle)  * degreesToRadians)) * distanceDriven;
-                yPos +=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-
-                if (keepInitialAngle) {
-                    gyro.turn(-strafeAngle, power, map);
-                    updateAngle(map);
-
-                }
+            //Set directions to drive based on direction facing
+            //Initial Direction
+            if (currentAngle < 45 && currentAngle > -45) {
+                forwardsDirection = "Forward";
+                backwardsDirection = "Backward";
+                leftDirection = "Left";
+                rightDirection = "Right";
+                forwardsBackwardsEnc = encY;
+                leftRightEnc = encX;
+            }
+            //90 degrees to the left of initial direction
+            else if (currentAngle > 45 && currentAngle < 135) {
+                forwardsDirection = "Right";
+                backwardsDirection = "Left";
+                leftDirection = "Forward";
+                rightDirection = "Backward";
+                forwardsBackwardsEnc = encX;
+                leftRightEnc = encY;
+            }
+            //90 degrees to the right of initial direction
+            else if (currentAngle < -45 && currentAngle > 135) {
+                forwardsDirection = "Left";
+                backwardsDirection = "Right";
+                leftDirection = "Backward";
+                rightDirection = "Forward";
+                forwardsBackwardsEnc = encX;
+                leftRightEnc = encY;
+            }
+            //180 degrees from initial direction
+            else {
+                forwardsDirection = "Backward";
+                backwardsDirection = "Forward";
+                leftDirection = "Right";
+                rightDirection = "Left";
+                forwardsBackwardsEnc = encY;
+                leftRightEnc = encX;
             }
 
-        }
-        //Quadrant 2
-        else if (targetX < xPos && targetY > yPos){
-            double deltaX = targetX - xPos;
-            double deltaY = targetY - yPos;
-            double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-            double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
 
-            if(deltaX < 5 && deltaX > -5){
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
-                drive.moveUntil(forwardsDirection, Math.abs(deltaY), power, map, true);
+            //Quadrant 1
+            if (targetX > xPos && targetY > yPos) {
+                double deltaX = targetX - xPos;
+                double deltaY = targetY - yPos;
+                double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
 
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                yPos += distanceDriven;
+                if (deltaX < 5 && deltaX > -5) { //Y direction
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
+                    drive.moveUntil(forwardsDirection, Math.abs(deltaY), power, map, true);
 
-            }else if (deltaY < 5 && deltaY > -5){
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    yPos += distanceDriven;
 
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                xPos -= distanceDriven;
+                } else if (deltaY < 5 && deltaY > -5) { //X direction
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(rightDirection, Math.abs(deltaX), power, map, true);
 
-            }else if (angleToDrive < 60){
-                gyro.turn(angleToDrive, power, map);
-                updateAngle(map);
+                    double distanceDriven = countsToCm(leftRightEnc.getCurrentPosition() - startingDistance);
+                    xPos += distanceDriven;
 
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
-                drive.moveUntil(forwardsDirection, distanceToDrive, power, map, true);
 
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                updateAngle(map);
-                xPos -=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos +=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-
-                if(keepInitialAngle){
+                } else if (angleToDrive < 60) {
                     gyro.turn(-angleToDrive, power, map);
                     updateAngle(map);
 
-                }
-            }else{
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
+                    drive.moveUntil(forwardsDirection, distanceToDrive, power, map, true);
 
-                double strafeAngle = 90-angleToDrive;
-                gyro.turn(-strafeAngle, power, map);
-                updateAngle(map);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    updateAngle(map);
+                    xPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
 
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(leftDirection, distanceToDrive, power, map, true);
 
-                double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
-                updateAngle(map);
-                xPos -=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos +=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    if (keepInitialAngle) {
+                        gyro.turn(angleToDrive, power, map);
+                        updateAngle(map);
+                    }
 
-                if(keepInitialAngle){
+                } else {
+
+                    double strafeAngle = 90 - angleToDrive;
                     gyro.turn(strafeAngle, power, map);
                     updateAngle(map);
 
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(rightDirection, distanceToDrive, power, map, true);
+
+                    double distanceDriven = countsToCm(leftRightEnc.getCurrentPosition() - startingDistance);
+                    updateAngle(map);
+                    xPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+
+                    if (keepInitialAngle) {
+                        gyro.turn(-strafeAngle, power, map);
+                        updateAngle(map);
+
+                    }
                 }
+
             }
+            //Quadrant 2
+            else if (targetX < xPos && targetY > yPos) {
+                double deltaX = targetX - xPos;
+                double deltaY = targetY - yPos;
+                double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
 
-        }
-        // Quadrant 3
-        else if (targetX < xPos && targetY < yPos){
-            double deltaX = targetX - xPos;
-            double deltaY = targetY - yPos;
-            double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-            double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
+                if (deltaX < 5 && deltaX > -5) {
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
+                    drive.moveUntil(forwardsDirection, Math.abs(deltaY), power, map, true);
 
-            if(deltaX < 5 && deltaX > -5){
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
-                drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    yPos += distanceDriven;
 
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                yPos -= distanceDriven;
+                } else if (deltaY < 5 && deltaY > -5) {
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
 
-            }else if (deltaY < 5 && deltaY > -5){
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    xPos -= distanceDriven;
 
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
-
-                double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
-                xPos -= distanceDriven;
-
-            }else if (angleToDrive < 60){
-                gyro.turn(-angleToDrive, power, map);
-                updateAngle(map);
-
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
-                drive.moveUntil(backwardsDirection, distanceToDrive, power, map, true);
-
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                updateAngle(map);
-                xPos -=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos -=  Math.abs(Math.cos(Math.abs(currentAngle)* degreesToRadians)) * distanceDriven;
-
-                if(keepInitialAngle){
+                } else if (angleToDrive < 60) {
                     gyro.turn(angleToDrive, power, map);
                     updateAngle(map);
 
-                }
-            }else{
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
+                    drive.moveUntil(forwardsDirection, distanceToDrive, power, map, true);
 
-                double strafeAngle = 90 - angleToDrive;
-                gyro.turn(strafeAngle, power, map);
-                updateAngle(map);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    updateAngle(map);
+                    xPos -= Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
 
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(leftDirection, distanceToDrive, power, map, true);
+                    if (keepInitialAngle) {
+                        gyro.turn(-angleToDrive, power, map);
+                        updateAngle(map);
 
-                double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
-                updateAngle(map);
-                xPos -=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos -=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    }
+                } else {
 
-                if(keepInitialAngle){
+                    double strafeAngle = 90 - angleToDrive;
                     gyro.turn(-strafeAngle, power, map);
                     updateAngle(map);
 
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(leftDirection, distanceToDrive, power, map, true);
+
+                    double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
+                    updateAngle(map);
+                    xPos -= Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+
+                    if (keepInitialAngle) {
+                        gyro.turn(strafeAngle, power, map);
+                        updateAngle(map);
+
+                    }
                 }
+
             }
-        }
-        //Quadrant 4
-        else if (targetX > xPos && targetY < yPos){
-            double deltaX = targetX - xPos;
-            double deltaY = targetY - yPos;
-            double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-            double angleToDrive = (180/Math.PI) * (Math.atan(Math.abs(deltaX)/Math.abs(deltaY)));
+            // Quadrant 3
+            else if (targetX < xPos && targetY < yPos) {
+                double deltaX = targetX - xPos;
+                double deltaY = targetY - yPos;
+                double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
 
-            if(deltaX < 5 && deltaX > -5){
+                if (deltaX < 5 && deltaX > -5) {
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition();
+                    drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
 
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
-                drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    yPos -= distanceDriven;
 
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                yPos -= distanceDriven;
+                } else if (deltaY < 5 && deltaY > -5) {
 
-            }else if (deltaY < 5 && deltaY > -5){
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(rightDirection, Math.abs(deltaX), power, map, true);
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(leftDirection, Math.abs(deltaX), power, map, true);
 
-                double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
-                xPos += distanceDriven;
+                    double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
+                    xPos -= distanceDriven;
 
-            }else if (angleToDrive < 60){
-                gyro.turn(angleToDrive, power, map);
-                updateAngle(map);
-
-                double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
-                drive.moveUntil(backwardsDirection, distanceToDrive, power, map, true);
-
-                double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
-                double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
-                updateAngle(map);
-                xPos +=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos -=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-
-                if(keepInitialAngle){
+                } else if (angleToDrive < 60) {
                     gyro.turn(-angleToDrive, power, map);
-
                     updateAngle(map);
 
-                }
-            }else{
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
+                    drive.moveUntil(backwardsDirection, distanceToDrive, power, map, true);
 
-                double strafeAngle = 90 - angleToDrive;
-                gyro.turn(-strafeAngle, power, map);
-                updateAngle(map);
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    updateAngle(map);
+                    xPos -= Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos -= Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
 
-                double startingDistance = leftRightEnc.getCurrentPosition();
-                drive.moveUntil(rightDirection, distanceToDrive, power, map, true);
+                    if (keepInitialAngle) {
+                        gyro.turn(angleToDrive, power, map);
+                        updateAngle(map);
 
-                double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
-                updateAngle(map);
-                xPos +=  Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
-                yPos -=  Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    }
+                } else {
 
-                if(keepInitialAngle){
+                    double strafeAngle = 90 - angleToDrive;
                     gyro.turn(strafeAngle, power, map);
                     updateAngle(map);
 
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(leftDirection, distanceToDrive, power, map, true);
+
+                    double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
+                    updateAngle(map);
+                    xPos -= Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos -= Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+
+                    if (keepInitialAngle) {
+                        gyro.turn(-strafeAngle, power, map);
+                        updateAngle(map);
+
+                    }
+                }
+            }
+            //Quadrant 4
+            else if (targetX > xPos && targetY < yPos) {
+                double deltaX = targetX - xPos;
+                double deltaY = targetY - yPos;
+                double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+                double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
+
+                if (deltaX < 5 && deltaX > -5) {
+
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
+                    drive.moveUntil(backwardsDirection, Math.abs(deltaY), power, map, true);
+
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    yPos -= distanceDriven;
+
+                } else if (deltaY < 5 && deltaY > -5) {
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(rightDirection, Math.abs(deltaX), power, map, true);
+
+                    double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
+                    xPos += distanceDriven;
+
+                } else if (angleToDrive < 60) {
+                    gyro.turn(angleToDrive, power, map);
+                    updateAngle(map);
+
+                    double startingDistance = -forwardsBackwardsEnc.getCurrentPosition(); //Negative here may be a problem
+                    drive.moveUntil(backwardsDirection, distanceToDrive, power, map, true);
+
+                    double currentPosition = -forwardsBackwardsEnc.getCurrentPosition();
+                    double distanceDriven = Math.abs(countsToCm(currentPosition - startingDistance));
+                    updateAngle(map);
+                    xPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos -= Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+
+                    if (keepInitialAngle) {
+                        gyro.turn(-angleToDrive, power, map);
+
+                        updateAngle(map);
+
+                    }
+                } else {
+
+                    double strafeAngle = 90 - angleToDrive;
+                    gyro.turn(-strafeAngle, power, map);
+                    updateAngle(map);
+
+                    double startingDistance = leftRightEnc.getCurrentPosition();
+                    drive.moveUntil(rightDirection, distanceToDrive, power, map, true);
+
+                    double distanceDriven = Math.abs(countsToCm(leftRightEnc.getCurrentPosition() - startingDistance));
+                    updateAngle(map);
+                    xPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+                    yPos -= Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * distanceDriven;
+
+                    if (keepInitialAngle) {
+                        gyro.turn(strafeAngle, power, map);
+                        updateAngle(map);
+
+                    }
                 }
             }
         }
-
     }
 
     public double countsToCm(double counts){

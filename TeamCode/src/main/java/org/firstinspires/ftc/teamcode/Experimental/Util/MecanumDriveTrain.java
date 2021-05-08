@@ -27,160 +27,221 @@ public class MecanumDriveTrain {
     public double theta;
     private double deltaHeading = 0;
 
-    /* Odometry */
-    public double pod1 = 0;
+    // Odometry
+//    public double pod1 = 0;
     public double pod2 = 0;
-//    public double pod3 = 0;
-    private double lastpod1 = 0;
-    private double lastpod2 = 0;
-//    private double lastpod3 = 0;
-    private double deltapod1;
-    private double deltapod2;
-//    private double deltapod3;
+    public double pod3 = 0;
+    //    private double lastPod1 = 0;
+    private double lastPod2 = 0;
+    private double lastPod3 = 0;
+    private double deltaPod1;
+    private double deltaPod2;
+    private double deltaPod3;
 
-    /* Odometry Constants */
-    public static double ticksToInch1 = 0.00588046031;
-//    public static double ticksToInch2 = 0.00582564639; Will be used for the third wheel odometry (second X wheel);
-    public static double ticksToInch3 = 0.00583427502;
-    public static double OdometryTrackWidth = 13.565;
-    public static double OdometryHorizontalOffset = -2.845;
-    private final double OdometryHeadingThreshold = PI/8;
-    public int zero1, zero2; //zero3,
-
-    /* Motor Caching */
-    private double lastRTPower = 0;
-    private double lastRBPower = 0;
-    private double lastLTPower = 0;
-    private double lastLBPower = 0;
+    // Motor Caching
+    private double lastFRPower = 0;
+    private double lastBRPower = 0;
+    private double lastFLPower = 0;
+    private double lastBLPower = 0;
     private final double motorUpdateTolerance = 0.05;
 
-    /* Other Constants */
-    public final static double xKp = 0.5;
-    public final static double yKp = 0.5;
-    public final static double thetaKp = 4.0;
-    public final static double xKd = 0.047;
-    public final static double yKd = 0.047;
-    public final static double thetaKd = 0.15;
+    // Odometry constants
+//    public static double ticksToInch1 = 0.00597622428;
+    public static double ticksToInch2 = 0.00597622428;
+    public static double ticksToInch3 = 0.00596020226;
+    public static double ODOMETRY_TRACK_WIDTH = 13.655;
+    public static double ODOMETRY_HORIZONTAL_OFFSET = -1.81;
+    private final double ODOMETRY_HEADING_THRESHOLD = PI/8;
+
+    // PD controller constants
+    public final static double xKp = 0.53;
+    public final static double yKp = 0.55;
+    public final static double thetaKp = 2.0;
+    public final static double xKd = 0.04;
+    public final static double yKd = 0.04;
+    public final static double thetaKd = 0.05;
+
+    // Odometry delta 0 counters
+    public int zero1, zero2, zero3;
 
     public boolean zeroStrafeCorrection = false;
 
-    public MecanumDriveTrain(LinearOpMode opMode, double initialX, double initialY, double initialTheta){
+//    private DcMotorEx intake;
+//    private DcMotorEx intake2;
+
+    private IMU imu;
+
+    // Constructor
+    public MecanumDriveTrain(LinearOpMode opMode, double initialX, double initialY, double initialTheta) {
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        leftTop = map.getLeftTop();
-        rightTop = map.getRightTop();
-        leftBottom = map.getLeftBottom();
-        rightBottom = map.getRightBottom();
+        imu = new IMU(initialTheta, opMode);
 
-        map.setUpDriveMotors(hardwareMap);
+        rightTop = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
+        leftTop = hardwareMap.get(DcMotorEx.class, "motorFrontLeft");
+        rightBottom = hardwareMap.get(DcMotorEx.class, "motorBackRight");
+        leftTop = hardwareMap.get(DcMotorEx.class, "motorBackLeft");
+
+//        intake = hardwareMap.get(DcMotorEx.class, "intake");
+//        intake2 = hardwareMap.get(DcMotorEx.class, "intake2");
+
+        leftTop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightTop.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBottom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBottom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+//        intake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        intake2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+//        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        rightTop.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBottom.setDirection(DcMotorSimple.Direction.REVERSE);
 
         x = initialX;
         y = initialY;
         theta = initialTheta;
     }
 
-    public void resetOdo(double newX, double newY, double newTheta){
+    // reset odometry
+    public void resetOdo(double newX, double newY, double newTheta) {
         x = newX;
         y = newY;
         theta = newTheta;
+        imu.resetHeading(newTheta);
     }
 
-    /* Robot Centric Movement  */
-    public void RCControls(double xDot, double yDot, double w){
-        double LTpower;
-        double RTpower;
-        double LBpower;
-        double RBpower;
+    // robot centric movement
+    public void setControls(double xdot, double ydot, double w) {
+        double FRpower, FLpower, BRpower, BLpower;
 
-        if(!zeroStrafeCorrection){
-            RTpower = yDot + xDot + w;
-            LBpower = yDot + xDot - w;
-            LTpower = -yDot + xDot - w;
-            RBpower = -yDot + xDot + w;
+        if (!zeroStrafeCorrection) {
+            FRpower = ydot + xdot + w;
+            FLpower = -ydot + xdot - w;
+            BRpower = -ydot + xdot + w;
+            BLpower = ydot + xdot - w;
         } else {
-            RTpower = xDot + w;
-            LBpower = xDot - w;
-            LTpower = xDot - w;
-            RBpower = xDot + w;
+            FRpower = xdot + w;
+            FLpower = xdot - w;
+            BRpower = xdot + w;
+            BLpower = xdot - w;
         }
 
-        double maxPower = Math.max(Math.abs(RTpower), Math.max(Math.abs(LBpower), Math.max(Math.abs(LTpower), Math.abs(RBpower))));
+        double maxpower = Math.max(Math.abs(FRpower), Math.max(Math.abs(FLpower), Math.max(Math.abs(BRpower), Math.abs(BLpower))));
 
-        if (maxPower > 1) {
-            RTpower /= maxPower;
-            LBpower /= maxPower;
-            LTpower /= maxPower;
-            RBpower /= maxPower;
+        if (maxpower > 1) {
+            FRpower /= maxpower;
+            FLpower /= maxpower;
+            BRpower /= maxpower;
+            BLpower /= maxpower;
         }
 
-        if(xDot == 0 && yDot == 0 && w == 0) {
-            leftTop.setPower(LBpower);
-            rightTop.setPower(RTpower);
-            leftBottom.setPower(LTpower);
-            rightBottom.setPower(RBpower);
+        if (xdot == 0 && ydot == 0 && w == 0) {
+            // Set Motor Powers
+            rightTop.setPower(FRpower);
+            leftTop.setPower(FLpower);
+            rightBottom.setPower(BRpower);
+            leftBottom.setPower(BLpower);
 
-            lastRTPower = RTpower;
-            lastRBPower = RBpower;
-            lastLTPower = LTpower;
-            lastLBPower = RBpower;
-        } else if (Math.abs(RTpower - lastRTPower) > motorUpdateTolerance || Math.abs(LTpower - lastLTPower) > motorUpdateTolerance ||
-                Math.abs(RBpower - lastRBPower) > motorUpdateTolerance || Math.abs(LBpower = lastLBPower) > motorUpdateTolerance) {
-            leftTop.setPower(LTpower);
-            rightTop.setPower(RTpower);
-            leftBottom.setPower(LBpower);
-            rightBottom.setPower(RBpower);
+            // Cache New Motor Powers
+            lastFRPower = FRpower;
+            lastFLPower = FLpower;
+            lastBRPower = BRpower;
+            lastBLPower = BLpower;
 
-            lastLTPower = LTpower;
-            lastRTPower = RTpower;
-            lastRBPower = RBpower;
-            lastLBPower = LBpower;
+        } else if (Math.abs(FRpower - lastFRPower) > motorUpdateTolerance || Math.abs(FLpower - lastFLPower) > motorUpdateTolerance
+                || Math.abs(BRpower - lastBRPower) > motorUpdateTolerance || Math.abs(BLpower - lastBLPower) > motorUpdateTolerance) {
+
+            // Set Motor Powers
+            rightTop.setPower(FRpower);
+            leftTop.setPower(FLpower);
+            rightBottom.setPower(BRpower);
+            leftBottom.setPower(BLpower);
+
+            // Cache New Motor Powers
+            lastFRPower = FRpower;
+            lastFLPower = FLpower;
+            lastBRPower = BRpower;
+            lastBLPower = BLpower;
         }
     }
 
-    public void FCControls(double xvelocity, double yvelocity, double w){
+    public void setRawPower(double frontRight, double frontLeft, double backRight, double backLeft) {
+        // Set Motor Powers
+        rightTop.setPower(frontRight);
+        leftTop.setPower(frontLeft);
+        rightBottom.setPower(backRight);
+        leftBottom.setPower(backLeft);
+
+        // Cache New Motor Powers
+        lastFRPower = frontRight;
+        lastFLPower = frontLeft;
+        lastBRPower = backRight;
+        lastBLPower = backLeft;
+    }
+
+    // field centric movement
+    public void setGlobalControls(double xvelocity, double yvelocity, double w) {
         double xdot = xvelocity * Math.cos(-theta) - yvelocity * Math.sin(-theta);
         double ydot = yvelocity * Math.cos(-theta) + xvelocity * Math.sin(-theta);
-        RCControls(xdot, ydot, w);
+        setControls(xdot, ydot, w);
     }
 
-    public void stop(){
-        RCControls(0,0,0);
+    // stop drivetrain
+    public void stop() {
+        setGlobalControls(0, 0, 0);
     }
 
-    /* Updating Position from Odometry */
-    public void updatePose(){
+    // update position from odometry
+    public void updatePose() {
         try {
-            // Set up for third wheel odometry for next year
-            pod1 = rightBottom.getCurrentPosition() * -ticksToInch1;
-//            pod1 = rightTop.getCurrentPosition() * -ticksToInch1;
-//            pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
-            pod2 = leftTop.getCurrentPosition() * ticksToInch3;
+//            pod1 = motorFrontLeft.getCurrentPosition() * ticksToInch1;
+            pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
+            pod3 = leftBottom.getCurrentPosition() * -ticksToInch3;
 
-            deltapod1 = pod1 - lastpod1;
-            deltapod2 = pod2 - lastpod2;
-//            deltapod3 = pod3 - lastpod3;
+//            deltaPod1 = pod1 - lastPod1;
+            deltaPod2 = pod2 - lastPod2;
+            deltaPod3 = pod3 - lastPod3;
 
-            if(!(deltapod1 == 0 && deltapod2 == 0 /* && deltapod3 == 0 */)) {
-                if (deltapod1 == 0) {
-                    Log.w("Pod-Delta-Log", "pod1 delta 0 ");
+//            deltaHeading = (deltaPod2 - deltaPod1) / ODOMETRY_TRACK_WIDTH;
+
+            imu.updateHeading();
+            theta = imu.getTheta();
+            deltaHeading = imu.getDeltaHeading();
+
+            deltaPod1 = deltaPod2 - deltaHeading * ODOMETRY_TRACK_WIDTH;
+
+            if (!(deltaPod1 == 0 && deltaPod2 == 0 && deltaPod3 == 0)) {
+                if (deltaPod1 == 0) {
+                    Log.w("pod-delta-log", "pod1 delta 0");
                     zero1++;
                 }
-
-                if (deltapod2 == 0) {
-                    Log.w("Pod-Delta-Log", "pod2 delta 0");
+                if (deltaPod2 == 0) {
+                    Log.w("pod-delta-log", "pod2 delta 0");
                     zero2++;
+                }
+                if (deltaPod3 == 0) {
+                    Log.w("pod-delta-log", "pod3 delta 0");
+                    zero3++;
                 }
             }
 
-            deltaHeading = (deltapod1) / OdometryTrackWidth;
+            double localX = (deltaPod1 + deltaPod2) / 2;
+            double localY = deltaPod3 - deltaHeading * ODOMETRY_HORIZONTAL_OFFSET;
 
-            double localX = (deltapod1) / 2;
-            double localY = deltapod2 - deltaHeading * OdometryHorizontalOffset;
+//            Robot.log(deltaPod1 + " " + deltaPod2 + " " + deltaPod3 + " " + deltaHeading);
 
-            if(deltaHeading < OdometryHeadingThreshold) {
+            if (deltaHeading < ODOMETRY_HEADING_THRESHOLD) {
                 x += localX * Math.cos(theta) - localY * Math.sin(theta);
                 y += localY * Math.cos(theta) + localX * Math.sin(theta);
+
             } else {
                 x += (localX * Math.sin(theta + deltaHeading) + localY * Math.cos(theta + deltaHeading)
                         - localX * Math.sin(theta) - localY * Math.cos(theta)) / deltaHeading;
@@ -188,23 +249,24 @@ public class MecanumDriveTrain {
                         - localY * Math.sin(theta) + localX * Math.cos(theta)) / deltaHeading;
             }
 
-            theta += deltaHeading;
-            theta = theta % (PI * 2);
+//            theta += deltaHeading;
+//            theta = theta % (2*PI);
+//            if (theta < 0) theta += 2*PI;
 
-            if (theta < 0) theta += PI * 2;
-
-            lastpod1 = pod1;
-            lastpod2 = pod2;
-        } catch (Exception e) { e.printStackTrace(); }
-
+//            lastPod1 = pod1;
+            lastPod2 = pod2;
+            lastPod3 = pod3;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-
-
-
-
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
+

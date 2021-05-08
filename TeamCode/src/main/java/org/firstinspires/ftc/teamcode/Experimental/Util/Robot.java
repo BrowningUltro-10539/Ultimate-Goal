@@ -21,6 +21,8 @@ import static java.lang.Math.PI;
 public class Robot {
     public MecanumDriveTrain driveTrain;
     public Logger logger;
+    public T265 t265;
+    private Intake intake;
 
     private List<LynxModule> allHubs;
     private ElapsedTime profiler;
@@ -32,6 +34,7 @@ public class Robot {
     private final double xyTolerance = 1;
     private final double thetaTolerance = PI/35;
     private double odoCovariance = 1;
+    private boolean useT265 = true;
 
     private final boolean isAuto;
 
@@ -94,7 +97,7 @@ public class Robot {
             thetaControl = theta - thetaTarget;
         }
 
-        driveTrain.FCControls(xKp * (xTarget - x) + xKd * (vxTarget - vx), yKp * (yTarget - y) + yKd * (vyTarget - vy), thetaKp * (-thetaControl) + thetaKd * (wTarget - w));
+        driveTrain.setGlobalControls(xKp * (xTarget - x) + xKd * (vxTarget - vx), yKp * (yTarget - y) + yKd * (vyTarget - vy), thetaKp * (-thetaControl) + thetaKd * (wTarget - w));
     }
 
     // Set target point (default Kp and Kv gains)

@@ -21,26 +21,33 @@ import java.util.Collections;
 import java.util.List;
 
 public class StackPipeline extends OpenCvPipeline {
-    public Status status;
 
+    public static int RECT_X = 140;
+    public static int RECT_Y = 100;
+    public static int RECT_WIDTH = 90;
+    public static int RECT_HEIGHT = 90;
+
+    // Thresholds
     public static int HEIGHT_MIN = 10;
     public static int WIDTH_MIN = 15;
     public static int HEIGHT_MAX = 60;
     public static int WIDTH_MAX = 60;
     public static double ONE_MIN = 2.3;
-    public static double ONE_MAX = 2.8;
+    public static double ONE_MAX = 3.3;
     public static double FOUR_MIN = 0.5;
     public static double FOUR_AREA = 1000;
 
+    // Results
     private double[] result = new double[3];
-    private Status ringCase = Status.NONE;
+    private Status status = Status.NONE;
     private Status[] results = new Status[5];
     private int cycles = 0;
 
+    // Image Processing Mats
     private RingProcessor processor;
     private Mat processed = new Mat();
 
-    public StackPipeline(){
+    public StackPipeline() {
         processor = new RingProcessor("height");
         Arrays.fill(results, Status.FOUR);
     }
@@ -49,8 +56,7 @@ public class StackPipeline extends OpenCvPipeline {
     public Mat processFrame(Mat input) {
         // Process Image
         processor.saveMatToDisk("raw.jpg", input);
-        /* We must fix this issue */
-        input = new Mat(input, new Rect(140, 30, 90, 90));
+        input = new Mat(input, new Rect(RECT_X, RECT_Y, RECT_WIDTH, RECT_HEIGHT));
         processed = processor.processFrame(input)[0];
 
         // Find Contours
@@ -72,17 +78,17 @@ public class StackPipeline extends OpenCvPipeline {
 
                 double width = boundingRect.size.width;
                 double height = boundingRect.size.height;
-                double wh_ratio = width/height;
+                double wh_ratio = width / height;
                 log("Loop(" + i + "): " + width + " " + height + " " + wh_ratio + " " + boundingRect.size.area());
 
-                result = new double[] {width, height, wh_ratio};
+                result = new double[]{width, height, wh_ratio};
 
                 // Checking WH ratio because heights were inconsistent in testing images
                 // This works better at a higher camera angle but comparing the height would be better for a lower camera angle.
                 if (FOUR_MIN <= wh_ratio && wh_ratio <= ONE_MIN && boundingRect.size.area() >= FOUR_AREA) {
-                    ringCase = Status.FOUR;
+                    status = Status.FOUR;
                 } else if (ONE_MIN <= wh_ratio && wh_ratio <= ONE_MAX) {
-                    ringCase = Status.ONE;
+                    status = Status.ONE;
                 }
             }
         }
@@ -92,27 +98,26 @@ public class StackPipeline extends OpenCvPipeline {
 
         // No Contours Detected
         if (i == 0) {
-            result = new double[] {0,0,0};
-            ringCase = Status.ONE;
+            result = new double[]{0, 0, 0};
+            status = Status.NONE;
             log("No Contours Detected");
         }
 
         log("Result: " + Arrays.toString(result));
-        log("Case: " + ringCase.name());
+        log("Case: " + status.name());
 
-        results[cycles % 5] = ringCase;
+        results[cycles % 5] = status;
         cycles++;
 
         return input;
     }
-
 
     public double[] getRawResult() {
         return result;
     }
 
     public Status getResult() {
-        return ringCase;
+        return status;
     }
 
     public Status getModeResult() {
@@ -133,7 +138,4 @@ public class StackPipeline extends OpenCvPipeline {
     private void log(String message) {
         Log.w("stack-height-pipe", message);
     }
-
-
-
 }

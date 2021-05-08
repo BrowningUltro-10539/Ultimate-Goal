@@ -7,16 +7,28 @@ import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+
 import org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocatorPipeline;
 import static org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocator.*;
+import static org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocator.maxX;
+import static org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocator.maxY;
+import static org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocator.minX;
+import static org.firstinspires.ftc.teamcode.Experimental.Vision.RingLocator.RingLocator.minY;
+
 
 
 public class Ring {
-    // TODO: 3/25/21 Upgrade both phones 6.2; allows for Java 8  
-    private final double relX;
-    private final double relY;
+    private double relX;
+    private double relY;
     private double absX;
     private double absY;
+    private double vx;
+    private double vy;
+    private double startX;
+    private double startY;
+    private double startTime;
+
     private static double DIST_THRESH = 1.5;
 
     public Ring(double relX, double relY, double absX, double absY) {
@@ -31,8 +43,17 @@ public class Ring {
         this.relY = relY;
     }
 
-    // Return a sorted list with up to two coordinate-filtered rings
-    
+    public Ring(double startX, double startY, double theta, double vx, double vy, double omega, double startTime) {
+        this.startX = startX * Math.sin(theta);
+        this.startY = startY * Math.cos(theta);
+        this.absX = this.startX;
+        this.absY = this.startY;
+        this.vx = vx * omega * Math.sin(theta) * Math.cos(theta);
+        this.vy = vy * omega * Math.cos(theta) * Math.sin(theta);
+        this.startTime = startTime;
+    }
+
+    // Return a sorted list with up to three coordinate-filtered rings
     public static ArrayList<Ring> getRingCoords(ArrayList<Ring> rings, double minX, double minY, double maxX, double maxY, double robotX, double robotY) {
         // Remove rings out of bounds
         int i = 0;
@@ -63,25 +84,43 @@ public class Ring {
             i++;
         }
 
-        // Sort rings based on distance
-        rings.sort((r1, r2) -> Double.compare(r1.getAbsDist(robotX, robotY), r2.getAbsDist(robotX, robotY)));
+        // Sort rings based on y coordinate
+        rings.sort(Comparator.comparingDouble(r -> r.getY()));
 
-        // Return up to two rings
-        if (rings.size() > 2) {
-            rings = new ArrayList<>(rings.subList(0, 2));
+        // Return up to three rings
+        if (rings.size() > 3) {
+            rings = new ArrayList<>(rings.subList(0, 3));
         }
 
-//        if (rings.size() == 3) {
-//            Ring closest = rings.get(0);
-//            // Find closet ring after first ring
-//            if (rings.get(1).getAbsDist(closest.absX, closest.absY) > rings.get(2).getAbsDist(closest.absX, closest.absY)) {
-//                Collections.swap(rings, 1, 2);
-//            }
-//        }
+        // Determine left or right sweep
+        if (rings.size() > 0) {
+            if (rings.get(rings.size() - 1).getY() - rings.get(0).getY() > 8) {
+                Ring closest = rings.remove(0);
+                if (closest.getX() <= robotX + 9) {
+                    rings.sort(Comparator.comparingDouble(r -> r.getX()));
+                } else {
+                    rings.sort(Comparator.comparingDouble(r -> -r.getX()));
+                }
+                rings.add(0, closest);
+            } else {
+                rings.sort(Comparator.comparingDouble(r -> r.getX()));
+            }
+        }
 
         return rings;
     }
 
+    public static boolean isLowestX(ArrayList<Ring> rings, Ring ring) {
+        double low = rings.get(0).getX();
+        for (Ring r : rings) {
+            if (r.getX() < low) {
+                low = r.getX();
+            }
+        }
+        return low == ring.getX();
+    }
+
+    // Return a sorted list with up to three coordinate-filtered rings
     public static ArrayList<Ring> getRingCoords(ArrayList<Ring> rings, double robotX, double robotY) {
         return getRingCoords(rings, minX, minY, maxX, maxY, robotX, robotY);
     }
@@ -94,7 +133,11 @@ public class Ring {
 
     @SuppressLint("DefaultLocale")
     public String toString() {
-        return "R(" + String.format("%.3f", relX) + ", " + String.format("%.3f", relY) + "), A(" + String.format("%.3f", absX) + ", " + String.format("%.3f", absY) + ")";
+        if (startTime == 0) {
+            return "R(" + String.format("%.3f", relX) + ", " + String.format("%.3f", relY) + "), A(" + String.format("%.3f", absX) + ", " + String.format("%.3f", absY) + ")";
+        } else {
+            return "A(" + String.format("%.3f", absX) + ", " + String.format("%.3f", absY) + "), V(" + String.format("%.3f", vx) + ", " + String.format("%.3f", vy) + "), S(" + String.format("%.3f", startTime) + ")";
+        }
     }
 
     public Ring clone() {
@@ -103,10 +146,6 @@ public class Ring {
 
     public double[] driveToRing(double robotX, double robotY) {
         return new double[] {absX, absY, Math.atan2(absY - robotY, absX - robotX)};
-    }
-
-    public double[] getRelCoords() {
-        return new double[] {relX, relY};
     }
 
     public double[] getAbsCoords() {
@@ -135,5 +174,11 @@ public class Ring {
 
     public double getY() {
         return absY;
+    }
+
+    public void updatePose(double curTime) {
+        double dt = (curTime - startTime) / 1000;
+        absX = startX + vx * dt;
+        absY = startY + vy * dt;
     }
 }

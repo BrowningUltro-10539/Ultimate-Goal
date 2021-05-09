@@ -30,7 +30,7 @@ public class vectorizedTurns {
     DcMotor forwardsBackwardsEnc;
     DcMotor leftRightEnc;
 
-    public void vectorizedTurn(double angle, double power, double targetX, double targetY, double initialAngle, DeviceMap map, newCoordinateSystem coords){
+    public void vectorizedTurn(double angle, double power, double targetX, double targetY, double initialAngle, DeviceMap map, newCoordinateSystem coords, OdometryDrive drive){
             boolean driving = false;
             xPos = coords.getXPos();
             yPos = coords.getYPos();
@@ -116,6 +116,16 @@ public class vectorizedTurns {
                     oldDeltaTheta = currentDeltaTheta;
                     oldEncPos=currentEncPos;
                 }
+
+                if(currentDeltaX < 5 && currentDeltaY < 5){
+                    drive.stop(map);
+                    driving = false;
+                    coords.setxPos(xPos);
+                    coords.setyPos(yPos);
+                    return;
+                }
+
+                
 
 
             }

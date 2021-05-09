@@ -63,7 +63,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         //Move forwards
 
-        robot.goToPosition(-50, 50, map, 0.3, true);
+        robot.goToPosition(-50, 50, map, 0.3, true, false);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());
@@ -87,7 +87,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
         telemetry.addData("Direction", robot.getCurrentAngle());
         telemetry.update();
 
-        robot.goToPosition(100, 30, map, 0.3, true);
+        robot.goToPosition(100, 30, map, 0.3, true, false);
         sleep(1000);
 
         telemetry.addData("X", robot.getXPos());
@@ -105,7 +105,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         robot.updateAngle(map);
 
-        robot.goToPosition(0,0, map, 0.3, true);
+        robot.goToPosition(0,0, map, 0.3, true, false);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());

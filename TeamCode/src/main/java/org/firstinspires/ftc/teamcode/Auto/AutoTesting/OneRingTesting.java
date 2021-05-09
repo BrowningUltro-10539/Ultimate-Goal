@@ -56,7 +56,7 @@ public class OneRingTesting extends LinearOpMode {
         telemetry.update();
         sleep(1000);
 
-        robot.goToPosition(-100,200,map,0.6,true);
+        robot.goToPosition(-100,200,map,0.6,true, false);
 
         //map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
         //map.getArm().setTargetPosition(100); CALCULATE THIS
@@ -69,7 +69,7 @@ public class OneRingTesting extends LinearOpMode {
         //map.getArm().setTargetPosition(-100); CALCULATE
         //map.getArm().setPower(1);
 
-        robot.goToPosition(-150,100,map, 0.5, true);
+        robot.goToPosition(-150,100,map, 0.5, true, false);
 
         map.getFlyWheel().setPower(1);
         sleep(2000);

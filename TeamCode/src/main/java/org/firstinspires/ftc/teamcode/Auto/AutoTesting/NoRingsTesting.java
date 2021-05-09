@@ -59,11 +59,11 @@ public class NoRingsTesting extends LinearOpMode {
         robot.initializeCoords(map, -50,0);
         sleep(1000);
 
-        robot.goToPosition(-20,1, map,0.5,true);
+        robot.goToPosition(-20,1, map,0.5,true, false);
 
         sleep(1000);
 
-        robot.goToPosition(-19,130, map, 0.5, true);
+        robot.goToPosition(-19,130, map, 0.5, true, false);
 
         map.getArm().setTargetPosition(500);
         map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -79,7 +79,7 @@ public class NoRingsTesting extends LinearOpMode {
         sleep(500);
         map.getArm().setPower(0);
 
-        robot.goToPosition(-100,100,map, 0.5, true);
+        robot.goToPosition(-100,100,map, 0.5, true, false);
 
         gyro.turn(90, 0.5, map);
 

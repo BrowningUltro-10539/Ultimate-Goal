@@ -323,7 +323,7 @@ public class OdometryDrive {
 
     }
 
-    private void stop(DeviceMap map){
+    public void stop(DeviceMap map){
         map.getLeftTop().setPower(0);
         map.getRightTop().setPower(0);
         map.getLeftBottom().setPower(0);

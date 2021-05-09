@@ -97,11 +97,11 @@ public class AutoOpMode extends LinearOpMode {
                 robot.initializeCoords(map, -50,0);
                 sleep(1000);
 
-                robot.goToPosition(-20,1, map,0.5,true);
+                robot.goToPosition(-20,1, map,0.5,true, false);
 
                 sleep(1000);
 
-                robot.goToPosition(-19,270, map, 0.5, true);
+                robot.goToPosition(-19,270, map, 0.5, true, false);
 
                 map.getArm().setPower(1);
 
@@ -119,7 +119,7 @@ public class AutoOpMode extends LinearOpMode {
                 sleep(500);
 
                 map.getArm().setPower(0);
-                robot.goToPosition(-90,120, map, 0.5, true);
+                robot.goToPosition(-90,120, map, 0.5, true, false);
 
                 drive.moveUntil("Backward", 60, 0.5, map, true);
 
@@ -174,11 +174,11 @@ public class AutoOpMode extends LinearOpMode {
                 robot.initializeCoords(map, -50,0);
                 sleep(1000);
 
-                robot.goToPosition(-20,1, map,0.5,true);
+                robot.goToPosition(-20,1, map,0.5,true, false);
 
                 sleep(1000);
 
-                robot.goToPosition(-60,180, map, 0.5, true);
+                robot.goToPosition(-60,180, map, 0.5, true, false);
 
                 map.getArm().setPower(1);
 
@@ -197,7 +197,7 @@ public class AutoOpMode extends LinearOpMode {
 
                 map.getArm().setPower(0);
 
-                robot.goToPosition(-90, 120, map, 0.5, true);
+                robot.goToPosition(-90, 120, map, 0.5, true, false);
 
                 drive.moveUntil("Backward", 60, 0.5, map, true);
 
@@ -255,11 +255,11 @@ public class AutoOpMode extends LinearOpMode {
                 robot.initializeCoords(map, -50,0);
                 sleep(1000);
 
-                robot.goToPosition(-20,1, map,0.5,true);
+                robot.goToPosition(-20,1, map,0.5,true, false);
 
                 sleep(1000);
 
-                robot.goToPosition(-19,130, map, 0.5, true);
+                robot.goToPosition(-19,130, map, 0.5, true, false);
 
                 map.getArm().setPower(1);
 
@@ -278,7 +278,7 @@ public class AutoOpMode extends LinearOpMode {
 
                 map.getArm().setPower(0);
 
-                robot.goToPosition(-90,60, map, 0.5, true);
+                robot.goToPosition(-90,60, map, 0.5, true, false);
 
                 gyro.turn(84, 0.5, map);
 

@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.RobotInfo;
 
 import android.content.Context;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.SimpleMotor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,7 +24,13 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 //import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
 public final class DeviceMap {
+/*
+    private Motor leftFront = null;
+    private Motor rightFront = null;
+    private Motor leftBack = null;
+    private Motor rightBack = null;
 
+ */
 
     private DcMotor leftTop = null;
     private DcMotor rightTop = null;
@@ -77,6 +85,14 @@ public final class DeviceMap {
     }
 
 
+    public void ftcLibInit(HardwareMap hardwareMap){
+        setUpMotors(hardwareMap);
+        setUpImu(hardwareMap);
+        setupServos(hardwareMap);
+        setUpImu(hardwareMap);
+
+    }
+
     public void setUpDriveMotors(HardwareMap map){
         //telemetry.addLine("Setting Up Drive Motors");
         leftTop = map.get(DcMotor.class, "LT");
@@ -96,6 +112,10 @@ public final class DeviceMap {
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             motor.setPower(0);
         }
+
+
+
+
     }
 
     public void setUpMotors(HardwareMap map){
@@ -225,4 +245,5 @@ public final class DeviceMap {
     }
 
     public OpenCvCamera getCamera(){ return camera; }
+
 }

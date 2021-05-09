@@ -1,0 +1,46 @@
+package org.firstinspires.ftc.teamcode.Experimental.Tests;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import static java.lang.Math.PI;
+import org.firstinspires.ftc.teamcode.Experimental.Util.MecanumDriveTrain;
+
+@TeleOp(name = "EXP: Odo w/ Tracking Test")
+public class OdoTracking extends LinearOpMode {
+    private double x, y, theta, prevTime;
+
+    @Override
+    public void runOpMode(){
+        MecanumDriveTrain dt = new MecanumDriveTrain(this, 20, 9, PI/2);
+
+        waitForStart();
+
+        while(opModeIsActive()){
+            dt.setControls(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+
+            if(gamepad1.x){
+                dt.resetOdo(20, 9, PI/2);
+            }
+
+            if(gamepad1.dpad_right || gamepad1.dpad_up || gamepad1.dpad_down || gamepad1.dpad_left){
+                dt.setRawPower(gamepad1.dpad_right ? 0.5 : 0, gamepad1.dpad_up ? 0.5 : 0, gamepad1.dpad_down ? 0.5 : 0, gamepad1.dpad_left ? 0.5 : 0);
+            }
+
+            dt.updatePose();
+            x = dt.x;
+            y = dt.y;
+            theta = dt.theta;
+
+            double curTime =  (double) System.currentTimeMillis() / 1000;
+            double timeDiff = curTime - prevTime;
+            prevTime = curTime;
+
+            telemetry.addData("Pod2", dt.pod2);
+            telemetry.addData("pod3", dt.pod3);
+            telemetry.addData("X", x);
+            telemetry.addData("Y", y);
+            telemetry.update();
+        }
+    }
+}

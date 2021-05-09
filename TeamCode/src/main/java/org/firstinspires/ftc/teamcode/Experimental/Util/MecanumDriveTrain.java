@@ -204,7 +204,7 @@ public class MecanumDriveTrain {
         try {
 //            pod1 = motorFrontLeft.getCurrentPosition() * ticksToInch1;
             pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
-            pod3 = leftBottom.getCurrentPosition() * -ticksToInch3;
+            pod3 = leftTop.getCurrentPosition() * -ticksToInch3;
 
 //            deltaPod1 = pod1 - lastPod1;
             deltaPod2 = pod2 - lastPod2;

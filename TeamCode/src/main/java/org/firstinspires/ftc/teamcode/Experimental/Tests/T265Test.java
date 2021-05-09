@@ -37,7 +37,7 @@ public class T265Test extends LinearOpMode {
         vslam.setPose(new Pose2d(startX * INCH_TO_METER, startY * INCH_TO_METER, new Rotation2d(startTheta)));
 
         while(opModeIsActive()){
-            mdt.RCControls(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            mdt.setControls(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
             T265Camera.CameraUpdate up = vslam.getLastReceivedCameraUpdate();
             if(up == null) continue;

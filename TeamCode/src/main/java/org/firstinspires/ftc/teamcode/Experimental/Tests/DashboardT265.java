@@ -33,7 +33,7 @@ public class DashboardT265 extends LinearOpMode{
         t265.startCam();
 
         while(opModeIsActive()){
-            mdt.RCControls(gamepad1.left_stick_x, gamepad1.left_stick_y, -gamepad1.right_stick_x);
+            mdt.setControls(gamepad1.left_stick_x, gamepad1.left_stick_y, -gamepad1.right_stick_x);
 
             if(gamepad1.x){
                 t265.setCameraPose(startX, startY, startTheta);

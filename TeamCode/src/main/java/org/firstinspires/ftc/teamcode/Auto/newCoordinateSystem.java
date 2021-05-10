@@ -66,7 +66,7 @@ public class newCoordinateSystem {
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
             //FIX TURN DISTANCE
-            vectorTurn.vectorizedTurn(angleToDrive, power, deltaX, deltaY, currentAngle, map,this, drive);
+            vectorTurn.vectorizedTurn(angleToDrive, power, deltaX/2, deltaY/2, currentAngle, map,this, drive);
 
         }else {
 

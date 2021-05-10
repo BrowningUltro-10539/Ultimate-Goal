@@ -15,13 +15,13 @@ public class t265CoordinateSystemTester extends LinearOpMode {
 
     double startingAngle = 0;
 
-    DeviceMap map = null;
+    //DeviceMap map = null;
 
     @Override
     public void runOpMode(){
-        map = new DeviceMap();
+        //map = new DeviceMap();
         t265CoordinateSystem coords = new t265CoordinateSystem();
-        map.init(hardwareMap);
+        //map.init(hardwareMap);
 
         coords.intializeSystem(startingX, startingY, startingAngle, hardwareMap, this);
 
@@ -29,7 +29,12 @@ public class t265CoordinateSystemTester extends LinearOpMode {
         while(opModeIsActive()){
             coords.t265update(this);
             sleep(50);
+
+            if(isStopRequested()){
+                coords.stop();
+            }
         }
+
 
 
 

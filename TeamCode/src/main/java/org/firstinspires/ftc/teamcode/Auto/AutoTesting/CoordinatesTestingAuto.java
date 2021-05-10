@@ -11,8 +11,7 @@ import org.firstinspires.ftc.teamcode.Auto.imuDrive;
 import org.firstinspires.ftc.teamcode.Auto.newCoordinateSystem;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
-@Disabled
-@Autonomous(name = "Testing Auto Coords")
+@Autonomous(name = "Testing Auto Vectorized")
 public class CoordinatesTestingAuto extends LinearOpMode {
 
 
@@ -63,14 +62,14 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         //Move forwards
 
-        robot.goToPosition(-50, 50, map, 0.3, true, false);
+        robot.goToPosition(-50, 50, map, 0.3, true, true);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());
         telemetry.addData("Angle", robot.getCurrentAngle());
         telemetry.update();
         sleep(1000);
-
+/*
         //Turn left 90
         gyro.turn(90, 0.3, map);
         robot.updateAngle(map);
@@ -105,7 +104,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         robot.updateAngle(map);
 
-        robot.goToPosition(0,0, map, 0.3, true, false);
+        //robot.goToPosition(0,0, map, 0.3, true, false);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());
@@ -114,7 +113,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         sleep(1000);
 
-
+*/
     }
 
 

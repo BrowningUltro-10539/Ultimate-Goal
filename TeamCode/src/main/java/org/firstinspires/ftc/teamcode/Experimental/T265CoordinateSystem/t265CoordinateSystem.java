@@ -28,9 +28,6 @@ public class t265CoordinateSystem {
 
     private static final double DEGREES_TO_RADIANS = Math.PI/180;
 
-    private static final double CM_TO_METER = 0.01;
-
-    private static final double METER_TO_CM = 100;
 
 
     public void intializeSystem(double startingX, double startingY, double startingAngle, HardwareMap hardwareMap, OpMode opMode){
@@ -45,17 +42,17 @@ public class t265CoordinateSystem {
         currentAngle = startingAngle;
 
         t265.start();
-        t265.setPose(new Pose2d(startingX * CM_TO_METER, startingY * CM_TO_METER, new Rotation2d(startingAngle*DEGREES_TO_RADIANS)));
+        t265.setPose(new Pose2d(startingX, startingY, new Rotation2d(startingAngle)));
 
         T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
 
-        Translation2d translation = new Translation2d(up.pose.getTranslation().getX() / 0.0254, up.pose.getTranslation().getY() / 0.0254);
+        Translation2d translation = new Translation2d(up.pose.getTranslation().getX(), up.pose.getTranslation().getY());
         Rotation2d rotation = up.pose.getRotation();
 
-        currentAngle = rotation.getDegrees();
+        currentAngle = rotation.getRadians();
 
-        xPos = translation.getX()*METER_TO_CM;
-        yPos = translation.getY()*METER_TO_CM;
+        xPos = translation.getX();
+        yPos = translation.getY();
 
         opMode.telemetry.addData("X:", xPos);
         opMode.telemetry.addData("Y:", yPos);
@@ -69,13 +66,13 @@ public class t265CoordinateSystem {
 
         T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
 
-        Translation2d translation = new Translation2d(up.pose.getTranslation().getX() / 0.0254, up.pose.getTranslation().getY() / 0.0254);
+        Translation2d translation = new Translation2d(up.pose.getTranslation().getX(), up.pose.getTranslation().getY());
         Rotation2d rotation = up.pose.getRotation();
 
-        currentAngle = rotation.getDegrees();
+        currentAngle = rotation.getRadians();
 
-        xPos = translation.getX()*METER_TO_CM;
-        yPos = translation.getY()*METER_TO_CM;
+        xPos = translation.getX();
+        yPos = translation.getY();
 
         opMode.telemetry.addData("X:", xPos);
         opMode.telemetry.addData("Y:", yPos);
@@ -85,9 +82,13 @@ public class t265CoordinateSystem {
 
     public Translation2d t265Translation(){
         T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
-        Translation2d translation = new Translation2d(up.pose.getTranslation().getX() / 0.0254, up.pose.getTranslation().getY() / 0.0254);
+        Translation2d translation = new Translation2d(up.pose.getTranslation().getX(), up.pose.getTranslation().getY());
         return translation;
 
+    }
+
+    public void stop(){
+        t265.stop();
     }
 
     public double getxPos() {
@@ -99,11 +100,11 @@ public class t265CoordinateSystem {
     }
 
     public double getCurrentAngleDegrees() {
-        return currentAngle;
+        return currentAngle*RADIANS_TO_DEGREES;
     }
 
     public double getCurrentAngleRadians(){
-        return currentAngle*DEGREES_TO_RADIANS;
+        return currentAngle;
     }
 }
 

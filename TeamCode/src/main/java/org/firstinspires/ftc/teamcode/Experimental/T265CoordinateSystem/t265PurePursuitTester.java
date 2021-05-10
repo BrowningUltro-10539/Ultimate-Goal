@@ -18,26 +18,21 @@ import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
 import java.util.ArrayList;
 
-@Autonomous(name="t265 coordinates tester", group="Auto")
+@Autonomous(name="pure pursuit tester", group="Auto")
 public class t265PurePursuitTester extends LinearOpMode {
 
 
     /**
      * This works by using the back left corner of the field as (0,0).
-     * REMEMBER: Pure pursuit works with inches, but the T265 Camera works with meters.
-     * THEREFORE: Make sure you are using the correct units everywhere. This class's init variables should be INCHES.
+     * REMEMBER: ALL UNITS IN INCHES.
      */
 
-    double startingX = 20;
+    double startingX = 0;
     double startingY = 0;
 
     double startingAngle = 0;
 
     DeviceMap map = null;
-
-    private static final double INCHES_TO_CM = 2.54;
-
-    private static final double CM_TO_INCHES = 1/2.54;
 
     private Motor leftFront = null;
     private Motor rightFront = null;
@@ -58,27 +53,46 @@ public class t265PurePursuitTester extends LinearOpMode {
         rightFront = new SimpleMotor("RT", hardwareMap);
         rightBack = new SimpleMotor("RB", hardwareMap);
 
+        leftBack.setInverted(true);
+        leftFront.setInverted(true);
+        rightBack.setInverted(true);
+        rightFront.setInverted(true);
+
         MecanumDrive drive = new MecanumDrive(leftFront, rightFront, leftBack, rightBack);
 
-        coords.intializeSystem(startingX * INCHES_TO_CM, startingY * INCHES_TO_CM, startingAngle, hardwareMap, this);
+        coords.intializeSystem(startingX, startingY, startingAngle, hardwareMap, this);
 
         waitForStart();
 
         StartWaypoint p1 = new StartWaypoint(coords.getxPos(), coords.getyPos());
-
-        EndWaypoint p2 = new EndWaypoint(40, 40, Math.PI/2, 0.5, 0.5, 30,0.8, 1);
+        EndWaypoint p2 = new EndWaypoint(20, 20, 0, 0.5, 0.5, 5,0.8, 1);
 
         Path path = new Path(p1, p2);
 
         path.init();
 
+        telemetry.addData("Path:", "Calculated");
+        telemetry.update();
+
         while(!path.isFinished()){
 
-            double speeds[] = path.loop(coords.getxPos() * CM_TO_INCHES, coords.getyPos() * CM_TO_INCHES, coords.getCurrentAngleRadians());
+            double speeds[] = path.loop(coords.getxPos(), coords.getyPos(), coords.getCurrentAngleRadians());
 
             drive.driveRobotCentric(speeds[0], speeds[1], speeds[2]);
 
             coords.t265update(this);
+
+            telemetry.addData("Speeds0", speeds[0]);
+            telemetry.addData("Speeds1", speeds[1]);
+            telemetry.addData("Speeds2", speeds[2]);
+            //telemetry.update();
+
+        }
+
+        drive.stop();
+        if(isStopRequested()){
+            drive.stop();
+            coords.stop();
         }
         drive.stop();
 

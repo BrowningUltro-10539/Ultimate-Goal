@@ -47,9 +47,9 @@ public class FieldSetUp extends LinearOpMode {
 
         sleep(1000);
 
-        robot.goToPosition(-50,2, map,0.5,true);
+        robot.goToPosition(-50,2, map,0.5,true, false);
         sleep(1000);
-        robot.goToPosition(-50, 0, map, 0.2, true);
+        robot.goToPosition(-50, 0, map, 0.2, true, false);
 
     }
 

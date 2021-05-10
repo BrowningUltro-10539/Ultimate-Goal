@@ -21,14 +21,23 @@ import java.util.ArrayList;
 @Autonomous(name="t265 coordinates tester", group="Auto")
 public class t265PurePursuitTester extends LinearOpMode {
 
-    double startingX = 0;
+
+    /**
+     * This works by using the back left corner of the field as (0,0).
+     * REMEMBER: Pure pursuit works with inches, but the T265 Camera works with meters.
+     * THEREFORE: Make sure you are using the correct units everywhere. This class's init variables should be INCHES.
+     */
+
+    double startingX = 20;
     double startingY = 0;
 
     double startingAngle = 0;
 
     DeviceMap map = null;
 
-    Path path = null;
+    private static final double INCHES_TO_CM = 2.54;
+
+    private static final double CM_TO_INCHES = 1/2.54;
 
     private Motor leftFront = null;
     private Motor rightFront = null;
@@ -51,13 +60,13 @@ public class t265PurePursuitTester extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(leftFront, rightFront, leftBack, rightBack);
 
-        coords.intializeSystem(startingX, startingY, startingAngle, hardwareMap, this);
+        coords.intializeSystem(startingX * INCHES_TO_CM, startingY * INCHES_TO_CM, startingAngle, hardwareMap, this);
 
         waitForStart();
 
         StartWaypoint p1 = new StartWaypoint(coords.getxPos(), coords.getyPos());
 
-        EndWaypoint p2 = new EndWaypoint(100, 100, Math.PI/2, 0.5, 0.5, 30,0.8, 1);
+        EndWaypoint p2 = new EndWaypoint(40, 40, Math.PI/2, 0.5, 0.5, 30,0.8, 1);
 
         Path path = new Path(p1, p2);
 
@@ -65,7 +74,7 @@ public class t265PurePursuitTester extends LinearOpMode {
 
         while(!path.isFinished()){
 
-            double speeds[] = path.loop(coords.getxPos(), coords.getyPos(), coords.getCurrentAngleRadians());
+            double speeds[] = path.loop(coords.getxPos() * CM_TO_INCHES, coords.getyPos() * CM_TO_INCHES, coords.getCurrentAngleRadians());
 
             drive.driveRobotCentric(speeds[0], speeds[1], speeds[2]);
 
@@ -76,4 +85,6 @@ public class t265PurePursuitTester extends LinearOpMode {
 
 
     }
+
+
 }

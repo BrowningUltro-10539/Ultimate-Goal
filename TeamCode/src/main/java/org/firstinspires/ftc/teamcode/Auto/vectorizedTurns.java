@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -85,49 +86,88 @@ public class vectorizedTurns {
             double currentEncPos;
             double currentDeltaTheta;
 
-            driving = true;
-// FOR Q1 ONLY!!!
-            while(driving){
-                Orientation currentOrientation = map.getImu().getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
-                double currentAngle = currentOrientation.firstAngle;
 
-                double currentDeltaX = Math.abs(targetX-xPos);
-                double currentDeltaY = Math.abs(targetY-yPos);
+            if(targetX>xPos && targetY>yPos){
+                driving = true;
+                while(driving){
+                    Orientation currentOrientation = map.getImu().getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+                    double currentAngle = currentOrientation.firstAngle;
+
+                    double currentDeltaX = Math.abs(targetX-xPos);
+                    double currentDeltaY = Math.abs(targetY-yPos);
 
 //These formulas are questionable
-                double outerPower = (currentDeltaX/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle + power;
-                double innerPower = power - (currentDeltaY/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle;
+                    double outerPower = (currentDeltaX/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle + power;
+                    double innerPower = power - (currentDeltaY/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle;
 
 //Set motor powers based on the values from the questionable formulas
-                map.getLeftTop().setPower(outerPower);
-                map.getLeftBottom().setPower(outerPower);
-                map.getRightTop().setPower(innerPower);
-                map.getRightBottom().setPower(innerPower);
+                    map.getLeftTop().setPower(outerPower);
+                    map.getLeftBottom().setPower(outerPower);
+                    map.getRightTop().setPower(innerPower);
+                    map.getRightBottom().setPower(innerPower);
 
-                //Measure Distance Travelled every time the angle changes by 1 degree
+                    //Measure Distance Travelled every time the angle changes by 1 degree
 
-                currentEncPos = -forwardsBackwardsEnc.getCurrentPosition();
-                currentDeltaTheta = Math.abs(currentAngle - initialAngle);
+                    currentEncPos = -forwardsBackwardsEnc.getCurrentPosition();
+                    currentDeltaTheta = Math.abs(currentAngle - initialAngle);
 
-                if(Math.abs(currentDeltaTheta-oldDeltaTheta) > 1){
-                    double currentDistance = Math.abs(coords.countsToCm(currentEncPos-oldEncPos));
-                    yPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
-                    xPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
-                    oldDeltaTheta = currentDeltaTheta;
-                    oldEncPos=currentEncPos;
+                    if(Math.abs(currentDeltaTheta-oldDeltaTheta) > 1){
+                        double currentDistance = Math.abs(coords.countsToCm(currentEncPos-oldEncPos));
+                        yPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
+                        xPos += Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
+                        oldDeltaTheta = currentDeltaTheta;
+                        oldEncPos=currentEncPos;
+                    }
+
+                    if(currentDeltaX < 5 && currentDeltaY < 5){
+                        drive.stop(map);
+                        driving = false;
+                        coords.setxPos(xPos);
+                        coords.setyPos(yPos);
+                        return;
+                    }
                 }
+            }
+            else if(targetX<xPos && targetY>yPos){
+                driving = true;
+                while(driving){
+                    Orientation currentOrientation = map.getImu().getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+                    double currentAngle = currentOrientation.firstAngle;
 
-                if(currentDeltaX < 5 && currentDeltaY < 5){
-                    drive.stop(map);
-                    driving = false;
-                    coords.setxPos(xPos);
-                    coords.setyPos(yPos);
-                    return;
+                    double currentDeltaX = Math.abs(targetX-xPos);
+                    double currentDeltaY = Math.abs(targetY-yPos);
+
+//These formulas are questionable
+                    double outerPower = (currentDeltaX/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle + power;
+                    double innerPower = power - (currentDeltaY/(currentDeltaX+currentDeltaY)) * (currentAngle - angle)/angle;
+
+//Set motor powers based on the values from the questionable formulas
+                    map.getLeftTop().setPower(innerPower);
+                    map.getLeftBottom().setPower(innerPower);
+                    map.getRightTop().setPower(outerPower);
+                    map.getRightBottom().setPower(outerPower);
+
+                    //Measure Distance Travelled every time the angle changes by 1 degree
+
+                    currentEncPos = -forwardsBackwardsEnc.getCurrentPosition();
+                    currentDeltaTheta = Math.abs(currentAngle - initialAngle);
+
+                    if(Math.abs(currentDeltaTheta-oldDeltaTheta) > 1){
+                        double currentDistance = Math.abs(coords.countsToCm(currentEncPos-oldEncPos));
+                        yPos += Math.abs(Math.sin(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
+                        xPos -= Math.abs(Math.cos(Math.abs(currentAngle) * degreesToRadians)) * currentDistance;
+                        oldDeltaTheta = currentDeltaTheta;
+                        oldEncPos=currentEncPos;
+                    }
+
+                    if(currentDeltaX < 5 && currentDeltaY < 5){
+                        drive.stop(map);
+                        driving = false;
+                        coords.setxPos(xPos);
+                        coords.setyPos(yPos);
+                        return;
+                    }
                 }
-
-                
-
-
             }
 
 

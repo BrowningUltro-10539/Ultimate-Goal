@@ -65,10 +65,12 @@ public class newCoordinateSystem {
             double deltaY = targetY - yPos;
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
-            //FIX TURN DISTANCE
-            vectorTurn.vectorizedTurn(angleToDrive, power, deltaX/2, deltaY/2, currentAngle, map,this, drive);
+            double initialAngle = currentAngle;
 
-        }else {
+            vectorTurn.vectorizedTurn(angleToDrive, power, targetX-(deltaX/2), targetY-(deltaY/2), currentAngle, map, this, drive);
+            vectorTurn.vectorizedTurn(initialAngle, power, targetX, targetY, currentAngle, map, this, drive);
+
+        }else{
 
 
             //set a primary, secondary, tertiary and fourth direction, based on angle before movement.

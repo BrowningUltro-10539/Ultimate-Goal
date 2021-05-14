@@ -106,19 +106,11 @@ public class TeleOpMecanum extends OpMode {
 
         //Shooting Controls
         if(gamepad2.a ){
-            map.getRingHolder().setPosition(1);
-            double startingTime = getRuntime();
-            while(Math.abs(startingTime - getRuntime()) < 0.3){
-                boolean waiting = true;
-            }
             map.getBucketPusher().setPosition(0);
             map.getLaunchBlocker().setPosition(-0.6);
-        }
-        else if(gamepad2.b ){
-            map.getRingHolder().setPosition(-1);
+        }else{
             map.getBucketPusher().setPosition(1);
             map.getLaunchBlocker().setPosition(1);
-
         }
 
         //Intake Flicker

@@ -62,7 +62,7 @@ public class CoordinatesTestingAuto extends LinearOpMode {
 
         //Move forwards
 
-        robot.goToPosition(-50, 50, map, 0.3, true, true);
+        robot.goToPosition(-50, 50, map, 0.3, true, true, this);
 
         telemetry.addData("X", robot.getXPos());
         telemetry.addData("Y", robot.getYPos());

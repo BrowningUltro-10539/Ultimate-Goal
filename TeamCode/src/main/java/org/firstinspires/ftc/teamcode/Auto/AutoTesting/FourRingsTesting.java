@@ -59,11 +59,11 @@ public class FourRingsTesting extends LinearOpMode {
         robot.initializeCoords(map, -50,0);
         sleep(1000);
 
-        robot.goToPosition(-20,1, map,0.5,true, false);
+        robot.goToPosition(-20,1, map,0.5,true, false, this);
 
         sleep(1000);
 
-        robot.goToPosition(-19,270, map, 0.5, true, false);
+        robot.goToPosition(-19,270, map, 0.5, true, false, this);
 
         map.getArm().setTargetPosition(500);
         map.getArm().setMode(DcMotor.RunMode.RUN_TO_POSITION);

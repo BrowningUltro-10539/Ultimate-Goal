@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -53,10 +54,10 @@ public class newCoordinateSystem {
         Orientation currentOrientation = map.getImu().getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
         currentAngle = currentOrientation.firstAngle;
     }
+    public void goToPosition(double targetX, double targetY, DeviceMap map, double power, boolean keepInitialAngle, boolean vectorized, OpMode opMode){
 
-    public void goToPosition(double targetX, double targetY, DeviceMap map, double power, boolean keepInitialAngle, boolean vectorized){
-
-
+        Orientation currentOrientation = map.getImu().getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES);
+        currentAngle = currentOrientation.firstAngle;
 
         if(vectorized){
 
@@ -65,10 +66,10 @@ public class newCoordinateSystem {
             double deltaY = targetY - yPos;
             double distanceToDrive = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
             double angleToDrive = (180 / Math.PI) * (Math.atan(Math.abs(deltaX) / Math.abs(deltaY)));
-            double initialAngle = currentAngle;
+            double startingAngle = currentAngle;
 
             vectorTurn.vectorizedTurn(angleToDrive, power, targetX-(deltaX/2), targetY-(deltaY/2), currentAngle, map, this, drive);
-            vectorTurn.vectorizedTurn(initialAngle, power, targetX, targetY, currentAngle, map, this, drive);
+            vectorTurn.vectorizedTurn(startingAngle, power, targetX, targetY, currentAngle, map, this, drive);
 
         }else{
 
@@ -76,10 +77,10 @@ public class newCoordinateSystem {
             //set a primary, secondary, tertiary and fourth direction, based on angle before movement.
             // then use those instead of "forward" etc.
 
-            String forwardsDirection = "Forward";
-            String backwardsDirection = "Backward";
-            String leftDirection = "Left";
-            String rightDirection = "Right";
+            String forwardsDirection = null;
+            String backwardsDirection = null;
+            String leftDirection = null;
+            String rightDirection = null;
 
 
             //Set directions to drive based on direction facing
@@ -102,7 +103,7 @@ public class newCoordinateSystem {
                 leftRightEnc = encY;
             }
             //90 degrees to the right of initial direction
-            else if (currentAngle < -45 && currentAngle > 135) {
+            else if (currentAngle < -45 && currentAngle > -135) {
                 forwardsDirection = "Left";
                 backwardsDirection = "Right";
                 leftDirection = "Backward";
@@ -111,7 +112,7 @@ public class newCoordinateSystem {
                 leftRightEnc = encY;
             }
             //180 degrees from initial direction
-            else {
+            else if (currentAngle < -135 || currentAngle > 135){
                 forwardsDirection = "Backward";
                 backwardsDirection = "Forward";
                 leftDirection = "Right";
@@ -120,6 +121,11 @@ public class newCoordinateSystem {
                 leftRightEnc = encX;
             }
 
+            opMode.telemetry.addData("angle", currentAngle);
+            opMode.telemetry.addData("x:", xPos);
+            opMode.telemetry.addData("y:", yPos);
+            opMode.telemetry.addData("backwards:", backwardsDirection);
+            opMode.telemetry.update();
 
             //Quadrant 1
             if (targetX > xPos && targetY > yPos) {

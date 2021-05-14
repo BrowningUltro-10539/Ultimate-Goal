@@ -399,9 +399,11 @@ public class newCoordinateSystem {
         return currentAngle;
     }
 
-    public void setxPos(double xPos){}
+    public void setxPos(double newXPos){
+        xPos = newXPos;
+    }
 
-    public void setyPos(double yPos){
-
+    public void setyPos(double newYPos){
+        yPos = newYPos;
     }
 }

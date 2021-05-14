@@ -72,9 +72,9 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
                 grabWobble2();
 
-                //driveToZoneC();
+                driveToZoneC2();
 
-                //dropWobble();
+                dropWobble();
 
                 //park();
 
@@ -94,11 +94,11 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
                 grabWobble2();
 
-                driveToZoneB();
+                driveToZoneB2();
 
                 dropWobble();
 
-                park();
+                //park();
 
                 break;
 
@@ -116,11 +116,11 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
                 grabWobble2();
 
-                //driveToZoneB();
+                driveToZoneA2();
 
-                //dropWobble();
+                dropWobble();
 
-                //park();
+                parkA();
 
                 break;
 
@@ -137,9 +137,9 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     }
     //ONE RING
     private void driveToZoneB(){
-        robot.goToPosition(-20,1, map,0.5,true, false, this);
+        robot.goToPosition(-10,1, map,0.5,true, false, this);
 
-        robot.goToPosition(-60,180, map, 0.5, true, false, this);
+        robot.goToPosition(-50,180, map, 0.5, true, false, this);
 
 
     }
@@ -175,11 +175,11 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
         map.getBucket().setPosition(0.62);
 
-        robot.goToPosition(-90,120, map, 0.7, true, false, this);
+        robot.goToPosition(-90,130, map, 0.7, true, false, this);
 
         map.getFlyWheel().setPower(1);
 
-        gyro.turn(91, 0.5, map);
+        gyro.turn(85, 0.5, map);
 
         robot.updateAngle(map);
 
@@ -187,7 +187,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     }
 
     private void shoot3(){
-        for(int i=0; i<3; i++){
+        for(int i=0; i<4; i++){
 
             map.getLaunchBlocker().setPosition(-0.7);
             map.getBucketPusher().setPosition(0);
@@ -197,23 +197,27 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
             map.getLaunchBlocker().setPosition(1);
             map.getRingHolder().setPosition(-1);
 
-            sleep(500);
+            sleep(1000);
         }
 
         sleep(500);
         map.getFlyWheel().setPower(0);
         map.getBucket().setPosition(0.5);
+        resetEncoders();
 
     }
 
     private void driveToWobble2(){
         robot.updateAngle(map);
 
-        robot.goToPosition(-100, 20, map, 0.5, true, false, this);
+        robot.goToPosition(-115, 45, map, 0.5, true, false, this);
 
         gyro.turn(180, 0.5, map);
 
         robot.updateAngle(map);
+
+        robot.setxPos(-130);
+        robot.setyPos(15);
     }
 
     private void grabWobble2(){
@@ -230,17 +234,21 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.getLeftClaw().setPosition(-1);
         map.getRightClaw().setPosition(1);
 
-        sleep(1000);
+        sleep(1500);
 
-        map.getArm().setPower(-0.8);
+        map.getArm().setPower(-0.5);
 
-        sleep(1000);
+        sleep(1500);
 
         map.getArm().setPower(0);
+
+        resetEncoders();
+
     }
 
-    private void park(){
-        robot.goToPosition(robot.getXPos()-1, 150, map, 0.8, true, false, this);
+    private void parkA(){
+        drive.moveUntil("Backward", 50, 1, map, true);
+//        robot.goToPosition(, 120, map, 1, true, false, this);
     }
 
 
@@ -288,6 +296,20 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         telemetry.update();
 
         resetEncoders();
+    }
+
+    private void driveToZoneC2(){
+//        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
+        robot.goToPosition(-59,270, map, 0.5, true, false, this);}
+
+    private void driveToZoneB2(){
+//        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
+        robot.goToPosition(-90,180, map, 0.5, true, false, this);
+    }
+
+    private void driveToZoneA2(){
+        // robot.goToPosition(-20, 10, map, 0.7, true, false, this);
+        robot.goToPosition(-69,150, map, 0.7, true, false, this);
     }
 
 

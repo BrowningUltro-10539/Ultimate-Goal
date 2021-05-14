@@ -34,7 +34,7 @@ public class T265Test extends LinearOpMode {
 
         waitForStart();
         vslam.start();
-        vslam.setPose(new Pose2d(startX * INCH_TO_METER, startY * INCH_TO_METER, new Rotation2d(startTheta)));
+        vslam.setPose(new Pose2d(startX, startY, new Rotation2d(startTheta)));
 
         while(opModeIsActive()){
             mdt.setControls(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
@@ -45,13 +45,6 @@ public class T265Test extends LinearOpMode {
             Translation2d translation = new Translation2d(up.pose.getTranslation().getX() / 0.0254, up.pose.getTranslation().getY() / 0.0254);
             Rotation2d rotation = up.pose.getRotation();
 
-            drawField();
-            drawRobot(translation.getX(), translation.getY(), rotation.getRadians(), "blue");
-
-            addPacket("X", translation.getX());
-            addPacket("Y", translation.getY());
-            addPacket("Theta", rotation.getRadians());
-            sendPacket();
         }
 
         vslam.stop();

@@ -78,10 +78,10 @@ public class MecanumDriveTrain {
 
         imu = new IMU(initialTheta, opMode);
 
-        rightTop = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
-        leftTop = hardwareMap.get(DcMotorEx.class, "motorFrontLeft");
-        rightBottom = hardwareMap.get(DcMotorEx.class, "motorBackRight");
-        leftTop = hardwareMap.get(DcMotorEx.class, "motorBackLeft");
+        rightTop = hardwareMap.get(DcMotorEx.class, "RT");
+        leftTop = hardwareMap.get(DcMotorEx.class, "LT");
+        rightBottom = hardwareMap.get(DcMotorEx.class, "RB");
+        leftTop = hardwareMap.get(DcMotorEx.class, "LB");
 
 //        intake = hardwareMap.get(DcMotorEx.class, "intake");
 //        intake2 = hardwareMap.get(DcMotorEx.class, "intake2");

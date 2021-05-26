@@ -1,27 +1,29 @@
 package org.firstinspires.ftc.teamcode.Experimental.Util;
 
 import android.util.Log;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
+
 import static java.lang.Math.PI;
 
 public class MecanumDriveTrain {
 
-    /* Third wheel odometry set up for next year */
-    private DeviceMap map;
-    private DcMotor leftTop;
-    private DcMotor rightTop;
-    private DcMotor leftBottom;
-    private DcMotor rightBottom;
+    /* TODO: CHANGE THE VALUES: TOO HIGH*/
 
+    private DcMotorEx rightTop;
+    private DcMotorEx leftTop;
+    private DcMotorEx rightBottom;
+    private DcMotorEx leftBottom;
+
+    // OpMode
     private LinearOpMode opMode;
 
+    // Tracking X/Y/Theta
     public double x;
     public double y;
     public double theta;
@@ -39,17 +41,19 @@ public class MecanumDriveTrain {
     private double deltaPod3;
 
     // Motor Caching
-    private double lastFRPower = 0;
-    private double lastBRPower = 0;
-    private double lastFLPower = 0;
-    private double lastBLPower = 0;
+    private double lastRTPower = 0;
+    private double lastRBPower = 0;
+    private double lastLTPower = 0;
+    private double lastLBPower = 0;
     private final double motorUpdateTolerance = 0.05;
 
     // Odometry constants
 //    public static double ticksToInch1 = 0.00597622428;
     public static double ticksToInch2 = 0.00597622428;
     public static double ticksToInch3 = 0.00596020226;
-    public static double ODOMETRY_TRACK_WIDTH = 13.655;
+    public static double ticksToCm2 = ticksToInch2 * 2.54;
+    public static double ticksToCm3 = ticksToInch3 * 2.54;
+    public static double ODOMETRY_TRACK_WIDTH = 13.655 * 2.54;
     public static double ODOMETRY_HORIZONTAL_OFFSET = -1.81;
     private final double ODOMETRY_HEADING_THRESHOLD = PI/8;
 
@@ -81,7 +85,7 @@ public class MecanumDriveTrain {
         rightTop = hardwareMap.get(DcMotorEx.class, "RT");
         leftTop = hardwareMap.get(DcMotorEx.class, "LT");
         rightBottom = hardwareMap.get(DcMotorEx.class, "RB");
-        leftTop = hardwareMap.get(DcMotorEx.class, "LB");
+        leftBottom = hardwareMap.get(DcMotorEx.class, "LB");
 
 //        intake = hardwareMap.get(DcMotorEx.class, "intake");
 //        intake2 = hardwareMap.get(DcMotorEx.class, "intake2");
@@ -98,6 +102,12 @@ public class MecanumDriveTrain {
         rightTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightBottom.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        leftTop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightTop.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBottom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBottom.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 //        intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        intake2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -151,13 +161,13 @@ public class MecanumDriveTrain {
             leftBottom.setPower(BLpower);
 
             // Cache New Motor Powers
-            lastFRPower = FRpower;
-            lastFLPower = FLpower;
-            lastBRPower = BRpower;
-            lastBLPower = BLpower;
+            lastRTPower = FRpower;
+            lastLTPower = FLpower;
+            lastRBPower = BRpower;
+            lastLBPower = BLpower;
 
-        } else if (Math.abs(FRpower - lastFRPower) > motorUpdateTolerance || Math.abs(FLpower - lastFLPower) > motorUpdateTolerance
-                || Math.abs(BRpower - lastBRPower) > motorUpdateTolerance || Math.abs(BLpower - lastBLPower) > motorUpdateTolerance) {
+        } else if (Math.abs(FRpower - lastRTPower) > motorUpdateTolerance || Math.abs(FLpower - lastLTPower) > motorUpdateTolerance
+                || Math.abs(BRpower - lastRBPower) > motorUpdateTolerance || Math.abs(BLpower - lastLBPower) > motorUpdateTolerance) {
 
             // Set Motor Powers
             rightTop.setPower(FRpower);
@@ -166,10 +176,10 @@ public class MecanumDriveTrain {
             leftBottom.setPower(BLpower);
 
             // Cache New Motor Powers
-            lastFRPower = FRpower;
-            lastFLPower = FLpower;
-            lastBRPower = BRpower;
-            lastBLPower = BLpower;
+            lastRTPower = FRpower;
+            lastLTPower = FLpower;
+            lastRBPower = BRpower;
+            lastLBPower = BLpower;
         }
     }
 
@@ -181,10 +191,10 @@ public class MecanumDriveTrain {
         leftBottom.setPower(backLeft);
 
         // Cache New Motor Powers
-        lastFRPower = frontRight;
-        lastFLPower = frontLeft;
-        lastBRPower = backRight;
-        lastBLPower = backLeft;
+        lastRTPower = frontRight;
+        lastLTPower = frontLeft;
+        lastRBPower = backRight;
+        lastLBPower = backLeft;
     }
 
     // field centric movement
@@ -203,8 +213,8 @@ public class MecanumDriveTrain {
     public void updatePose() {
         try {
 //            pod1 = motorFrontLeft.getCurrentPosition() * ticksToInch1;
-            pod2 = rightBottom.getCurrentPosition() * ticksToInch2;
-            pod3 = leftTop.getCurrentPosition() * -ticksToInch3;
+            pod2 = rightBottom.getCurrentPosition() * ticksToCm2;
+            pod3 = leftTop.getCurrentPosition() * -ticksToCm3;
 
 //            deltaPod1 = pod1 - lastPod1;
             deltaPod2 = pod2 - lastPod2;
@@ -261,12 +271,3 @@ public class MecanumDriveTrain {
         }
     }
 }
-
-
-
-
-
-
-
-
-

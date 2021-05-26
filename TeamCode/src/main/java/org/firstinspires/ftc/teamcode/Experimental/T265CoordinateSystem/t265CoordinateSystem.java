@@ -9,10 +9,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.spartronics4915.lib.T265Camera;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Auto.OdometryDrive;
 import org.firstinspires.ftc.teamcode.Auto.imuDrive;
+import org.firstinspires.ftc.teamcode.Experimental.T265PP.Pathing.Pose;
+import org.firstinspires.ftc.teamcode.Experimental.Tests.T265Test;
 import org.firstinspires.ftc.teamcode.Experimental.Util.T265;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
+
+import static java.lang.Math.*;
 
 public class t265CoordinateSystem {
     private static T265Camera t265 = null;
@@ -24,15 +29,31 @@ public class t265CoordinateSystem {
 
     private double currentAngle;
 
-    private static final double RADIANS_TO_DEGREES = 180/Math.PI;
+    private static final double RADIANS_TO_DEGREES = 180/ PI;
 
-    private static final double DEGREES_TO_RADIANS = Math.PI/180;
+    private static final double DEGREES_TO_RADIANS = PI/180;
+
+    private static final double METERS_TO_INCHES = 39.37;
+
+    public Pose startingPose = new Pose(0, 0, PI/2);
+
+    public double translationY;
+    public double translationX;
+    public double rotation;
 
 
 
     public void intializeSystem(double startingX, double startingY, double startingAngle, HardwareMap hardwareMap, OpMode opMode){
         if(t265 == null){
             t265 = new T265Camera(new Transform2d(), 0.1, hardwareMap.appContext);
+            T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
+            translationY = up.pose.getTranslation().getY();
+            translationX = up.pose.getTranslation().getX();
+            rotation = up.pose.getRotation().getDegrees();
+
+
+
+
 
         }
 
@@ -51,8 +72,8 @@ public class t265CoordinateSystem {
 
         currentAngle = rotation.getRadians();
 
-        xPos = translation.getX();
-        yPos = translation.getY();
+        yPos = translation.getX() * METERS_TO_INCHES;
+        xPos = translation.getY() * METERS_TO_INCHES;
 
         opMode.telemetry.addData("X:", xPos);
         opMode.telemetry.addData("Y:", yPos);
@@ -71,8 +92,8 @@ public class t265CoordinateSystem {
 
         currentAngle = rotation.getRadians();
 
-        xPos = translation.getX();
-        yPos = translation.getY();
+        xPos = translation.getX() * METERS_TO_INCHES;
+        yPos = translation.getY() * METERS_TO_INCHES;
 
         opMode.telemetry.addData("X:", xPos);
         opMode.telemetry.addData("Y:", yPos);
@@ -82,9 +103,30 @@ public class t265CoordinateSystem {
 
     public Translation2d t265Translation(){
         T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
-        Translation2d translation = new Translation2d(up.pose.getTranslation().getX(), up.pose.getTranslation().getY());
+        Translation2d translation = new Translation2d(up.pose.getTranslation().getX() * METERS_TO_INCHES, up.pose.getTranslation().getY() * METERS_TO_INCHES);
         return translation;
 
+    }
+
+    public void setPose(Pose2d new_Pose){
+        t265.setPose((new_Pose));
+    }
+
+    public static void updateTrackedPos(Pose startingPose, Pose currentPose, Telemetry telemetry){
+        T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
+
+        Translation2d translation = new Translation2d(up.pose.getTranslation().getX() / 0.0254, up.pose.getTranslation().getY() / 0.0254);
+        Rotation2d rotation = up.pose.getRotation();
+
+        currentPose.x =
+        currentPose.x = startingPose.x + -translation.getY();
+        currentPose.y = startingPose.y + translation.getX();
+        currentPose.angle = startingPose.angle - rotation.getDegrees();
+
+        telemetry.addData("X", currentPose.x);
+        telemetry.addData("Y", currentPose.y);
+        telemetry.addData("Rotation", currentPose.angle);
+        telemetry.update();
     }
 
     public void stop(){
@@ -106,5 +148,24 @@ public class t265CoordinateSystem {
     public double getCurrentAngleRadians(){
         return currentAngle;
     }
+
+    public T265Camera getT265() { return t265; }
+
+    public Pose getStartingPose() {
+        return startingPose;
+    }
+
+    public double getCurrentY(){
+        return translationY;
+    }
+
+    public double getCurrentX(){
+        return translationX;
+    }
+
+    public double getRotation(){
+        return rotation;
+    }
+
 }
 

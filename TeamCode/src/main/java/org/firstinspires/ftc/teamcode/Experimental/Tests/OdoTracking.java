@@ -12,12 +12,12 @@ public class OdoTracking extends LinearOpMode {
 
     @Override
     public void runOpMode(){
-        MecanumDriveTrain dt = new MecanumDriveTrain(this, 20, 9, PI/2);
+        MecanumDriveTrain dt = new MecanumDriveTrain(this, 0, 0, PI/2);
 
         waitForStart();
 
         while(opModeIsActive()){
-            dt.setControls(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x);
+            dt.setControls(gamepad1.left_stick_y, gamepad1.left_stick_x, -gamepad1.right_stick_x);
 
             if(gamepad1.x){
                 dt.resetOdo(20, 9, PI/2);
@@ -40,6 +40,7 @@ public class OdoTracking extends LinearOpMode {
             telemetry.addData("pod3", dt.pod3);
             telemetry.addData("X", x);
             telemetry.addData("Y", y);
+            telemetry.addData("Theta", theta);
             telemetry.update();
         }
     }

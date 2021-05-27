@@ -99,7 +99,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
                 dropWobble();
 
-                //park();
+                parkB();
 
                 break;
 
@@ -174,7 +174,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     }
 
     private void driveToShootingPos(){
-
+        map.getRingFlicker().setPosition(0);
         map.getBucket().setPosition(0.62);
 
         robot.goToPosition(-80,130, map, 0.7, true, false, this);
@@ -211,11 +211,13 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     private void driveToWobble2(){
         robot.updateAngle(map);
 
-        robot.goToPosition(-110, 40, map, 0.5, true, false, this);
+        robot.goToPosition(-120, 40, map, 0.7, true, false, this);
 
-        gyro.turn(180, 0.5, map);
+        gyro.turn(180, 0.8, map);
 
         robot.updateAngle(map);
+
+        robot.goToPosition(robot.getXPos()+12, robot.getYPos()-1, map,0.5,true,false,this);
 
         robot.setxPos(-130);
         robot.setyPos(15);
@@ -252,6 +254,9 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 //        robot.goToPosition(, 120, map, 1, true, false, this);
     }
 
+    private void parkB(){
+        robot.goToPosition(robot.getXPos()-1, 200, map, 1, true, false, this);
+    }
 
 
     private void resetEncoders(){
@@ -305,12 +310,12 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     private void driveToZoneB2(){
 //        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
-        robot.goToPosition(-91,220, map, 0.7, true, false, this);
+        robot.goToPosition(-91,220, map, 0.9, true, false, this);
     }
 
     private void driveToZoneA2(){
         // robot.goToPosition(-20, 10, map, 0.7, true, false, this);
-        robot.goToPosition(-69,150, map, 0.7, true, false, this);
+        robot.goToPosition(-100,160, map, 0.7, true, false, this);
     }
 
     /* Each ring situation drives to a separate position although its the same x and y  */
@@ -318,11 +323,11 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.getRingFlicker().setPosition(0);
         map.getBucket().setPosition(0.61);
 
-        robot.goToPosition(-51,145, map, 0.7, true, false, this);
+        robot.goToPosition(robot.getXPos()-1,145, map, 0.7, true, false, this);
 
-        map.getFlyWheel().setPower(1);
+        map.getFlyWheel().setPower(1);3
 
-        gyro.turn(90, 0.5, map);
+        gyro.turn(94, 0.7, map);
 
         robot.updateAngle(map);
 
@@ -332,9 +337,14 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     private void driveToWobble2B(){
         robot.updateAngle(map);
 
-        robot.goToPosition(-90, 35, map, 0.7, true, false, this);
+        robot.goToPosition(-90, 37, map, 0.8, true, false, this);
 
-        gyro.turn(180, 0.5, map);
+        gyro.turn(180, 0.8, map);
+
+        robot.setxPos(-90);
+        robot.setyPos(35);
+
+        robot.goToPosition(-82, robot.getYPos()-1, map,0.5,true,false, this);
 
         robot.updateAngle(map);
 

@@ -4,11 +4,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import static java.lang.Math.PI;
-import org.firstinspires.ftc.teamcode.Experimental.Util.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Util.MecanumDriveTrain;
 
 @TeleOp(name = "EXP: Odo w/ Tracking Test")
 public class OdoTracking extends LinearOpMode {
     private double x, y, theta, prevTime;
+    // X range: 929 (left)  - -776 (right)
+    // Y range:
 
     @Override
     public void runOpMode(){

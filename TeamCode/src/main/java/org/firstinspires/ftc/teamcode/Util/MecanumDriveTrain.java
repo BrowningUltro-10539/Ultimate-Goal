@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Experimental.Util;
+package org.firstinspires.ftc.teamcode.Util;
 
 import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Experimental.Util.IMU;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
 
 import static java.lang.Math.PI;

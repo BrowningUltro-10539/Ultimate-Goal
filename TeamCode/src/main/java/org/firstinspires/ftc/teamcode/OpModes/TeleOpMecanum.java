@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Util.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RobotInfo.DeviceMap;
+import org.firstinspires.ftc.teamcode.Util.MecanumDriveTrain;
 
 @TeleOp(name = "Tele-Op", group = "MecanumDrive")
 public class TeleOpMecanum extends OpMode {
-    MecanumDrive driver;
+    MecanumDriveTrain mdt;
     private ElapsedTime runtime = new ElapsedTime();
     DeviceMap map = new DeviceMap();
     double lastRuntime = 0;
@@ -21,7 +23,9 @@ public class TeleOpMecanum extends OpMode {
         map.init(hardwareMap);
         telemetry.addData("Status:", " Initialized");
 
-        driver = new MecanumDrive();
+//        mdt = new MecanumDriveTrain(LinearOpMode, -50, -5, 0);
+
+
 
 
     }
@@ -61,12 +65,12 @@ public class TeleOpMecanum extends OpMode {
             switchDirection = false;
         }
 
-        if(switchDirection){
-            driver.move(map, y/multiplier, x/multiplier, right_stick_x/multiplier);
-        }else{
-            driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
-
-        }
+//        if(switchDirection){
+//            driver.move(map, y/multiplier, x/multiplier, right_stick_x/multiplier);
+//        }else{
+//            driver.move(map,x/multiplier, y/multiplier, right_stick_x/multiplier);
+//
+//        }
         //This may have to be changed
 
 

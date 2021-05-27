@@ -43,7 +43,7 @@ public class t265CoordinateSystem {
 
 
 
-    public void intializeSystem(double startingX, double startingY, double startingAngle, HardwareMap hardwareMap, OpMode opMode){
+    public void intializeSystem(Pose pose, HardwareMap hardwareMap, OpMode opMode){
         if(t265 == null){
             t265 = new T265Camera(new Transform2d(), 0.1, hardwareMap.appContext);
             T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
@@ -57,13 +57,13 @@ public class t265CoordinateSystem {
 
         }
 
-        xPos = startingX;
-        yPos = startingY;
+        xPos = pose.x;
+        yPos = pose.y;
 
-        currentAngle = startingAngle;
+        currentAngle = pose.angle;
 
         t265.start();
-        t265.setPose(new Pose2d(startingX, startingY, new Rotation2d(startingAngle)));
+        t265.setPose(new Pose2d(pose.x, pose.y, new Rotation2d(pose.angle)));
 
         T265Camera.CameraUpdate up = t265.getLastReceivedCameraUpdate();
 
@@ -75,8 +75,8 @@ public class t265CoordinateSystem {
         yPos = translation.getX() * METERS_TO_INCHES;
         xPos = translation.getY() * METERS_TO_INCHES;
 
-        opMode.telemetry.addData("X:", xPos);
-        opMode.telemetry.addData("Y:", yPos);
+        opMode.telemetry.addData("X:", yPos);
+        opMode.telemetry.addData("Y:", xPos);
         opMode.telemetry.addData("Angle:", currentAngle);
         opMode.telemetry.update();
 

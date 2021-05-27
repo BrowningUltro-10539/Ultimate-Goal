@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode.Experimental.Util;
 
 import android.util.Log;
 
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.teamcode.Experimental.Debugging.Logger;
-import org.firstinspires.ftc.teamcode.Experimental.Pathing.Pose;
-import org.firstinspires.ftc.teamcode.Experimental.Util.MecanumDriveTrain;
+import org.firstinspires.ftc.teamcode.Experimental.T265CoordinateSystem.t265CoordinateSystem;
+import org.firstinspires.ftc.teamcode.Experimental.T265PP.Pathing.Pose;
 import org.firstinspires.ftc.teamcode.Experimental.Vision.Ring;
-import org.firstinspires.ftc.teamcode.Experimental.Pathing.Target;
+import org.firstinspires.ftc.teamcode.Util.MecanumDriveTrain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ public class Robot {
     public Logger logger;
     public T265 t265;
     private Intake intake;
+    public t265CoordinateSystem VSLAM;
 
     private List<LynxModule> allHubs;
     private ElapsedTime profiler;
@@ -47,6 +48,11 @@ public class Robot {
 
     private LinearOpMode op;
 
+
+    public Pose startingPose;
+    private Pose currentPose;
+
+    //= new org.firstinspires.ftc.teamcode.Experimental.T265PP.Pathing.Pose().copy(startingPose);
     public Robot(LinearOpMode op, double x, double y, double theta, boolean isAuto) {
         this.x = x;
         this.y = y;
@@ -54,10 +60,21 @@ public class Robot {
         this.op = op;
         this.isAuto = isAuto;
 
-        driveTrain = new MecanumDriveTrain(op, x, y, theta);
+        VSLAM = new t265CoordinateSystem();
+        startingPose = new Pose(x, y, theta);
+        currentPose = new Pose().copy(startingPose);
+
+        VSLAM.intializeSystem(startingPose, op.hardwareMap, op);
+        VSLAM.stop();
+        VSLAM.intializeSystem(startingPose, op.hardwareMap, op);
+
+        driveTrain = new MecanumDriveTrain(op, startingPose.x, startingPose.y, startingPose.angle);
         /* Create classes that let you run specific functions for intake and wobble goal */
         logger = new Logger();
         profiler = new ElapsedTime();
+
+
+
 
         allHubs = op.hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
@@ -77,8 +94,10 @@ public class Robot {
     }
 
     /* Similar to the initializeCords system Eric developed */
-    public void resetOdo(double x, double y, double theta){
+    public void resetOdo(double x, double y, double theta, LinearOpMode op){
+        Pose resetPose = new Pose(x, y, theta);
         driveTrain.resetOdo(x, y, theta);
+        VSLAM.intializeSystem(resetPose, op.hardwareMap, op);
     }
 
     /* Odometry Functions */
@@ -105,20 +124,20 @@ public class Robot {
         setTargetPoint(xTarget, yTarget, thetaTarget, 0,0,0, MecanumDriveTrain.xKp, MecanumDriveTrain.yKp, MecanumDriveTrain.thetaKp, MecanumDriveTrain.xKd, MecanumDriveTrain.yKd, MecanumDriveTrain.thetaKd );
     }
     // Set target point (using pose, velocity specification, default Kp and Kv gains)
-    public void setTargetPoint(Pose pose) {
-        setTargetPoint(pose.x, pose.y, pose.theta, pose.vx, pose.vy, pose.w, MecanumDriveTrain.xKp, MecanumDriveTrain.yKp, MecanumDriveTrain.thetaKp, MecanumDriveTrain.xKd, MecanumDriveTrain.yKd, MecanumDriveTrain.thetaKd);
-    }
+//    public void setTargetPoint(Pose pose) {
+//        setTargetPoint(pose.x, pose.y, pose.theta, pose.vx, pose.vy, pose.w, MecanumDriveTrain.xKp, MecanumDriveTrain.yKp, MecanumDriveTrain.thetaKp, MecanumDriveTrain.xKd, MecanumDriveTrain.yKd, MecanumDriveTrain.thetaKd);
+//    }
 
     // Set target point (using pose, custom theta and omega, default Kp and Kv gains)
-    public void setTargetPoint(Pose pose, double theta, double w) {
-        setTargetPoint(pose.x, pose.y, theta, pose.vx, pose.vy, w, MecanumDriveTrain.xKp, MecanumDriveTrain.yKp, MecanumDriveTrain.thetaKp, MecanumDriveTrain.xKd, MecanumDriveTrain.yKd, MecanumDriveTrain.thetaKd);
-    }
-
-    // Set target point (using target object)
-    public void setTargetPoint(Target target) {
-        Pose pose = target.getPose();
-        setTargetPoint(pose.x, pose.y, pose.theta, pose.vx, pose.vy, pose.w, target.xKp(), target.yKp(), target.thetaKp(), target.xKd(), target.yKd(), target.thetaKd());
-    }
+//    public void setTargetPoint(Pose pose, double theta, double w) {
+//        setTargetPoint(pose.x, pose.y, theta, pose.vx, pose.vy, w, MecanumDriveTrain.xKp, MecanumDriveTrain.yKp, MecanumDriveTrain.thetaKp, MecanumDriveTrain.xKd, MecanumDriveTrain.yKd, MecanumDriveTrain.thetaKd);
+//    }
+//
+//    // Set target point (using target object)
+//    public void setTargetPoint(Target target) {
+//        Pose pose = target.getPose();
+//        setTargetPoint(pose.x, pose.y, pose.theta, pose.vx, pose.vy, pose.w, target.xKp(), target.yKp(), target.thetaKp(), target.xKd(), target.yKd(), target.thetaKd());
+//    }
 
     // Check if robot is at a certain point/angle (default tolerance)
     public boolean isAtPose(double targetX, double targetY, double targetTheta) {

@@ -2,21 +2,14 @@ package org.firstinspires.ftc.teamcode.Experimental.Tests;
 
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
-import com.arcrobotics.ftclib.geometry.Transform2d;
-import com.arcrobotics.ftclib.geometry.Translation2d;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.spartronics4915.lib.T265Camera;
 
 import org.firstinspires.ftc.teamcode.Experimental.T265CoordinateSystem.t265CoordinateSystem;
-import org.firstinspires.ftc.teamcode.Experimental.Util.MecanumDriveTrain;
-import org.firstinspires.ftc.teamcode.Experimental.Util.T265;
+import org.firstinspires.ftc.teamcode.Util.MecanumDriveTrain;
 
-import static org.firstinspires.ftc.teamcode.Experimental.Debugging.Dashboard.addPacket;
-import static org.firstinspires.ftc.teamcode.Experimental.Debugging.Dashboard.drawField;
+import static java.lang.Math.PI;
 import static org.firstinspires.ftc.teamcode.Experimental.Debugging.Dashboard.drawRobot;
-import static org.firstinspires.ftc.teamcode.Experimental.Debugging.Dashboard.sendPacket;
 
 import org.firstinspires.ftc.teamcode.Experimental.T265PP.Pathing.Pose;
 @TeleOp(name = "EXP: T265 Test")
@@ -25,7 +18,7 @@ public class T265Test extends LinearOpMode {
     /* TODO: Eric, please change these values as I'm only doing these off of arbitrary values. */
     public static double startX = 0;
     public static double startY = 0;
-    public double startTheta = Math.PI/2;
+    public double startTheta = PI/2;
     private static final double INCH_TO_METER = 0.0254;
     private double x;
     private double y;
@@ -36,7 +29,7 @@ public class T265Test extends LinearOpMode {
     public Pose2d reset_pos = new Pose2d(0, 0, rotation);
 
     public Pose startingPose;
-    private Pose currentPose = new Pose().copy(startingPose);
+    private Pose currentPose;
 
 
     @Override
@@ -45,11 +38,14 @@ public class T265Test extends LinearOpMode {
         t265CoordinateSystem coords = new t265CoordinateSystem();
 
 
-        startingPose = new Pose(coords.getCurrentY(), coords.getCurrentX(), coords.getRotation());
+        startingPose = new Pose(0, 0, PI/2);
         currentPose = new Pose().copy(startingPose);
         //map.init(hardwareMap);
 
-        coords.intializeSystem(startX, startY, startTheta, hardwareMap, this);
+        coords.intializeSystem(startingPose, hardwareMap, this);
+        coords.stop();
+        coords.intializeSystem(startingPose, hardwareMap, this);
+
 
 
         waitForStart();

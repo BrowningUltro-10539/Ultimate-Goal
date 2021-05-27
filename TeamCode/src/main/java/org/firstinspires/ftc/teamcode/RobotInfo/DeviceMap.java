@@ -78,7 +78,7 @@ public final class DeviceMap {
 
     public void init(HardwareMap hardwareMap){
         setUpMotors(hardwareMap);
-        setUpDriveMotors(hardwareMap);
+        //setUpDriveMotors(hardwareMap);
         setUpImu(hardwareMap);
         setupServos(hardwareMap);
         setUpImu(hardwareMap);

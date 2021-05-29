@@ -16,12 +16,14 @@ public class TeleOpMecanum extends OpMode {
     DeviceMap map = new DeviceMap();
     double lastRuntime = 0;
     double timePass = getRuntime();
-    boolean switchDirection = true;
+    boolean switchDirection = false;
 
     @Override
     public void init(){
         map.init(hardwareMap);
         telemetry.addData("Status:", " Initialized");
+
+        mdt = new MecanumDriveTrain(this, 0, 0, 0);
 
 //        mdt = new MecanumDriveTrain(LinearOpMode, -50, -5, 0);
 
@@ -52,6 +54,24 @@ public class TeleOpMecanum extends OpMode {
         double multiplier  = gamepad1.left_trigger + 1;
 
 
+        if(gamepad1.left_bumper){
+            switchDirection = true;
+        } else if(gamepad1.right_bumper){
+            switchDirection = false;
+        }
+
+
+        if(switchDirection){
+            mdt.setControls(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x);
+        } else {
+            mdt.setControls(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x);
+        }
+
+
+
+
+
+
         if(gamepad1.left_trigger>0){
             x=x/2;
             y=y/2;
@@ -80,7 +100,7 @@ public class TeleOpMecanum extends OpMode {
         if(gamepad2.right_trigger > 0){
             double flyPower = map.getFlyWheel().getPower();
             timePass = getRuntime();
-            map.getBucket().setPosition(0.63);
+            map.getBucket().setPosition(0.62);
 
 
             if (Math.abs(timePass - lastRuntime) > 0.05){

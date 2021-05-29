@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Util;
 
 import android.util.Log;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,7 +23,8 @@ public class MecanumDriveTrain {
     private DcMotorEx leftBottom;
 
     // OpMode
-    private LinearOpMode opMode;
+    private OpMode opMode;
+
 
     // Tracking X/Y/Theta
     public double x;
@@ -77,11 +79,11 @@ public class MecanumDriveTrain {
     private IMU imu;
 
     // Constructor
-    public MecanumDriveTrain(LinearOpMode opMode, double initialX, double initialY, double initialTheta) {
+    public MecanumDriveTrain(OpMode opMode, double initialX, double initialY, double initialTheta) {
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
 
-        imu = new IMU(initialTheta, opMode);
+
 
         rightTop = hardwareMap.get(DcMotorEx.class, "RT");
         leftTop = hardwareMap.get(DcMotorEx.class, "LT");

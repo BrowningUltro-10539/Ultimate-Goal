@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import android.sax.StartElementListener;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.modernrobotics.comm.RobotUsbDevicePretendModernRobotics;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -58,24 +60,31 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.deactivateOpenCV();
 
 
-        switch(pos){
+
+
+        switch (pos) {
             case FOUR: // Zone C
 
                 driveToZoneC();
 
                 dropWobble();
 
-                driveToShootingPos();
+                goToShootingPosC();
 
                 shoot3();
 
-                driveToWobble2();
+                //pickUpRandomStackC();
 
-                grabWobble2();
+                //shootRandomRings();
 
-                driveToZoneC2();
-
-                dropWobble();
+                parkC();
+//                driveToWobble2();
+//
+//                grabWobble2();
+//
+//                driveToZoneC2();
+//
+//                dropWobble();
 
                 //park();
 
@@ -130,34 +139,37 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
 
     //FOUR RINGS
-    private void driveToZoneC(){
-        robot.goToPosition(-20,1, map,0.7,true, false, this);
+    private void driveToZoneC() {
+        robot.goToPosition(-20, 1, map, 0.7, true, false, this);
 
-        robot.goToPosition(-19,270, map, 0.7, true, false, this);
+        robot.goToPosition(-19, 255, map, 0.7, true, false, this);
 
     }
+
     //ONE RING
-    private void driveToZoneB(){
-        robot.goToPosition(-15,1, map,0.7,true, false, this);
+    private void driveToZoneB() {
+        robot.goToPosition(-15, 1, map, 0.7, true, false, this);
 
-        robot.goToPosition(-50,180, map, 0.7, true, false, this);
+        robot.goToPosition(-50, 175, map, 0.7, true, false, this);
 
 
     }
+
     //NO RINGS
-    private void driveToZoneA(){
-        robot.goToPosition(-20,1, map,0.7,true, false, this);
+    private void driveToZoneA() {
+        robot.goToPosition(-20, 1, map, 0.7, true, false, this);
 
-        robot.goToPosition(-19,130, map, 0.7, true, false, this);
+        robot.goToPosition(-19, 130, map, 0.7, true, false, this);
 
+        robot.setyPos(131);
 
     }
 
-    private void dropWobble(){
+    private void dropWobble() {
         map.getRingFlicker().setPosition(0.5);
         map.getArm().setPower(0.7);
 
-        sleep(700);
+        sleep(1000);
 
         map.getArm().setPower(0);
 
@@ -173,11 +185,11 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.getArm().setPower(0);
     }
 
-    private void driveToShootingPos(){
+    private void driveToShootingPos() {
         map.getRingFlicker().setPosition(0);
         map.getBucket().setPosition(0.62);
 
-        robot.goToPosition(-80,130, map, 0.7, true, false, this);
+        robot.goToPosition(-80, 130, map, 0.7, true, false, this);
 
         map.getFlyWheel().setPower(1);
 
@@ -188,8 +200,8 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     }
 
-    private void shoot3(){
-        for(int i=0; i<4; i++){
+    private void shoot3() {
+        for (int i = 0; i < 4; i++) {
 
             map.getLaunchBlocker().setPosition(-0.7);
             map.getBucketPusher().setPosition(0);
@@ -208,7 +220,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     }
 
-    private void driveToWobble2(){
+    private void driveToWobble2() {
         robot.updateAngle(map);
 
         robot.goToPosition(-120, 40, map, 0.7, true, false, this);
@@ -217,13 +229,13 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
         robot.updateAngle(map);
 
-        robot.goToPosition(robot.getXPos()+12, robot.getYPos()-1, map,0.5,true,false,this);
+        robot.goToPosition(robot.getXPos() + 12, robot.getYPos() - 1, map, 0.5, true, false, this);
 
         robot.setxPos(-130);
         robot.setyPos(15);
     }
 
-    private void grabWobble2(){
+    private void grabWobble2() {
 
         map.getLeftClaw().setPosition(1);
         map.getRightClaw().setPosition(-1);
@@ -249,17 +261,21 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     }
 
-    private void parkA(){
+    private void parkA() {
         drive.moveUntil("Backward", 50, 1, map, true);
 //        robot.goToPosition(, 120, map, 1, true, false, this);
     }
 
-    private void parkB(){
-        robot.goToPosition(robot.getXPos()-1, 200, map, 1, true, false, this);
+    private void parkB() {
+        robot.goToPosition(robot.getXPos() - 1, 200, map, 1, true, false, this);
+    }
+
+    private void parkC(){
+        drive.moveUntil("Forward", 10, 0.5, map, true);
     }
 
 
-    private void resetEncoders(){
+    private void resetEncoders() {
         map.getRightBottom().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         map.getLeftBottom().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         map.getRightTop().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -271,7 +287,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.getLeftTop().setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    private void setup(){
+    private void setup() {
         map.getCamera().setPipeline(pipeline1 = new OpenCVBoxes());
         map.getCamera().startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
 
@@ -304,28 +320,30 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         resetEncoders();
     }
 
-    private void driveToZoneC2(){
+    private void driveToZoneC2() {
 //        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
-        robot.goToPosition(-59,270, map, 0.7, true, false, this);}
-
-    private void driveToZoneB2(){
-//        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
-        robot.goToPosition(-91,220, map, 0.9, true, false, this);
+        robot.goToPosition(-59, 270, map, 0.7, true, false, this);
     }
 
-    private void driveToZoneA2(){
+    private void driveToZoneB2() {
+//        robot.goToPosition(-20, 10, map, 0.7, true, false, this);
+        robot.goToPosition(-91, 220, map, 0.9, true, false, this);
+    }
+
+    private void driveToZoneA2() {
         // robot.goToPosition(-20, 10, map, 0.7, true, false, this);
-        robot.goToPosition(-100,160, map, 0.7, true, false, this);
+        robot.goToPosition(-100, 160, map, 0.7, true, false, this);
     }
 
     /* Each ring situation drives to a separate position although its the same x and y  */
-    private void driveToShootingPosB(){
+    private void driveToShootingPosB() {
         map.getRingFlicker().setPosition(0);
         map.getBucket().setPosition(0.61);
 
-        robot.goToPosition(robot.getXPos()-1,145, map, 0.7, true, false, this);
+        robot.goToPosition(robot.getXPos() - 1, 145, map, 0.7, true, false, this);
 
-        map.getFlyWheel().setPower(1);3
+        map.getFlyWheel().setPower(1);
+
 
         gyro.turn(94, 0.7, map);
 
@@ -334,7 +352,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     }
 
-    private void driveToWobble2B(){
+    private void driveToWobble2B() {
         robot.updateAngle(map);
 
         robot.goToPosition(-90, 37, map, 0.8, true, false, this);
@@ -344,7 +362,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         robot.setxPos(-90);
         robot.setyPos(35);
 
-        robot.goToPosition(-82, robot.getYPos()-1, map,0.5,true,false, this);
+        robot.goToPosition(-75, robot.getYPos() - 1, map, 0.5, true, false, this);
 
         robot.updateAngle(map);
 
@@ -353,9 +371,82 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
     }
 
+    private void pickUpRandomStackC() {
+        map.getRingFlicker().setPosition(0.0);
+        gyro.turn(180, 0.8, map);
+
+        robot.goToPosition(robot.getXPos() - 1, 120, map, 0.8, true, false, this);
+
+        map.getIntake().setPower(-1);
+
+        robot.goToPosition(robot.getXPos() - 1, 110, map, 0.7, true, false, this);
+        sleep(1500);
+
+        map.getRingFlicker().setPosition(0.5);
+        sleep(500);
+        map.getRingFlicker().setPosition(0.0);
+
+        robot.goToPosition(robot.getXPos() - 1, 105, map, 0.5, true, false, this);
+
+        sleep(1500);
+        map.getRingFlicker().setPosition(0.5);
+
+        gyro.turn(180, 1, map);
+
+        robot.updateAngle(map);
+        robot.setxPos(-30);
+        robot.setyPos(110);
+
+        robot.goToPosition(-29, 120, map, 0.8, true, false, this);
+        map.getIntake().setPower(1);
+        map.getFlyWheel().setPower(1);
+        map.getRingFlicker().setPosition(0);
+        map.getBucket().setPosition(0.62);
+
+    }
+
+    private void goToShootingPosC() {
+        map.getRingFlicker().setPosition(0);
+        map.getBucket().setPosition(0.61);
+
+        robot.goToPosition(-48, 130, map, 0.7, true, false, this);
+        map.getFlyWheel().setPower(1);
 
 
+        gyro.turn(85, 0.7, map);
 
+        robot.updateAngle(map);
 
+        robot.setxPos(-60);
+        robot.setyPos(130);
+    }
+
+    private void shootRandomRings() {
+
+        for (int i = 0; i < 2; i++) {
+
+            map.getLaunchBlocker().setPosition(-0.7);
+            map.getBucketPusher().setPosition(0);
+            sleep(1000);
+
+            map.getIntake().setPower(0);
+
+            map.getBucketPusher().setPosition(1);
+            map.getLaunchBlocker().setPosition(1);
+            map.getRingHolder().setPosition(-1);
+
+            sleep(1000);
+        }
+
+        map.getFlyWheel().setPower(0);
+        map.getBucket().setPosition(0.5);
+        resetEncoders();
+    }
 
 }
+
+
+
+
+
+

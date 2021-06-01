@@ -150,7 +150,10 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     private void driveToZoneB() {
         robot.goToPosition(-15, 1, map, 0.7, true, false, this);
 
-        robot.goToPosition(-50, 175, map, 0.7, true, false, this);
+        robot.goToPosition(-40, 180, map, 0.7, true, false, this);
+
+        robot.setyPos(175);
+        robot.setxPos(-45);
 
 
     }
@@ -223,13 +226,13 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
     private void driveToWobble2() {
         robot.updateAngle(map);
 
-        robot.goToPosition(-120, 40, map, 0.7, true, false, this);
+        robot.goToPosition(-110, 40, map, 0.7, true, false, this);
 
         gyro.turn(180, 0.8, map);
 
         robot.updateAngle(map);
 
-        robot.goToPosition(robot.getXPos() + 12, robot.getYPos() - 1, map, 0.5, true, false, this);
+        robot.goToPosition(robot.getXPos() + 15, robot.getYPos() - 1, map, 0.5, true, false, this);
 
         robot.setxPos(-130);
         robot.setyPos(15);
@@ -240,7 +243,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         map.getLeftClaw().setPosition(1);
         map.getRightClaw().setPosition(-1);
 
-        map.getArm().setPower(1);
+        map.getArm().setPower(0.8);
 
         sleep(500);
 
@@ -344,10 +347,12 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
 
         map.getFlyWheel().setPower(1);
 
-
-        gyro.turn(94, 0.7, map);
+        gyro.turn(88, 0.7, map);
 
         robot.updateAngle(map);
+
+        robot.setxPos(-50);
+        robot.setyPos(145);
 
 
     }
@@ -362,7 +367,7 @@ public class AutoOpModeDoubleWobbleGoal extends LinearOpMode {
         robot.setxPos(-90);
         robot.setyPos(35);
 
-        robot.goToPosition(-75, robot.getYPos() - 1, map, 0.5, true, false, this);
+        robot.goToPosition(-70, robot.getYPos() - 1, map, 0.5, true, false, this);
 
         robot.updateAngle(map);
 
